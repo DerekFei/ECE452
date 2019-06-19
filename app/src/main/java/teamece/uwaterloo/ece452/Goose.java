@@ -32,6 +32,10 @@ public class Goose implements GameObject {
         generateHitBox();
     }
 
+    public Rect getHitBox() {
+        return this.hitBox;
+    }
+
     private void generateHitBox(){
         hitBox.set((int)((left ? 0 : width * 3) + (leftLane ? width * 0.25 : width * 1.75)), height * 5,
                 (int)((left ? 0 : width * 3) + (leftLane ? width * 1.25 : width * 2.75)), height * 6);
