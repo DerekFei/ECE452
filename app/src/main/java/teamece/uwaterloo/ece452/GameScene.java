@@ -21,6 +21,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private int windowWidth;
     private int windowHeight;
 
+    private FallingObjectManager mgr;
+
     public  GameScene (Context context) {
         super(context);
 
@@ -37,6 +39,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
         leftGoose = new Goose(true, windowWidth, windowHeight);
         rightGoose = new Goose(false, windowWidth, windowHeight);
+        mgr = new FallingObjectManager(windowWidth, windowHeight);
 
         setFocusable(true);
     }
@@ -82,6 +85,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
+        mgr.update();
     }
 
     @Override
@@ -97,6 +101,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
         leftGoose.draw(canvas);
         rightGoose.draw(canvas);
+        mgr.draw(canvas);
     }
 
 }
