@@ -12,6 +12,8 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.lang.ref.WeakReference;
+
 public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
 
@@ -22,6 +24,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private int windowHeight;
 
     private FallingObjectManager mgr;
+    private CollisionManager collisionManager;
 
     public  GameScene (Context context) {
         super(context);
@@ -39,10 +42,18 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
         leftGoose = new Goose(true, windowWidth, windowHeight);
         rightGoose = new Goose(false, windowWidth, windowHeight);
-        mgr = new FallingObjectManager(windowWidth, windowHeight);
-
+        mgr = new FallingObjectManager(windowWidth, windowHeight, this);
+        this.collisionManager = new CollisionManager(leftGoose, rightGoose, this);
         setFocusable(true);
     }
+
+    public void registerCollisionManager(FallingDevice device) {
+        if (device != null && this.collisionManager != null) {
+            this.collisionManager.addObjectToWatch(new WeakReference<>(device));
+        }
+    }
+
+
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -86,6 +97,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
         mgr.update();
+        collisionManager.detect();
     }
 
     @Override

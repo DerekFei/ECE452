@@ -1,18 +1,21 @@
 package teamece.uwaterloo.ece452;
 
 import android.graphics.Canvas;
+
+import java.lang.ref.WeakReference;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class FallingObjectManager {
     private int windowWidth;
     private int windowHeight;
     private int counter1, counter2, counter3, counter4;
-
+    WeakReference<GameScene> gameScene;
     private FallingLED led1, led2, led3, led4;
 
-    public FallingObjectManager(int windowWidth, int windowHeight) {
+    public FallingObjectManager(int windowWidth, int windowHeight, GameScene gameScene) {
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
+        this.gameScene = new WeakReference<>(gameScene);
         led1 = new FallingLED(true, true, windowWidth, windowHeight);
         led2 = new FallingLED(true, false, windowWidth, windowHeight);
         led3 = new FallingLED(false, true, windowWidth, windowHeight);
@@ -21,6 +24,12 @@ public class FallingObjectManager {
         counter2 = ThreadLocalRandom.current().nextInt(0, 121);
         counter3 = ThreadLocalRandom.current().nextInt(0, 121);
         counter4 = ThreadLocalRandom.current().nextInt(0, 121);
+        if (this.gameScene.get() != null) {
+            this.gameScene.get().registerCollisionManager(led1);
+            this.gameScene.get().registerCollisionManager(led2);
+            this.gameScene.get().registerCollisionManager(led3);
+            this.gameScene.get().registerCollisionManager(led4);
+        }
     }
 
     public void update(){

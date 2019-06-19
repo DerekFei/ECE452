@@ -47,6 +47,10 @@ public abstract class FallingDevice implements GameObject {
                 (int)((left ? 0 : width * 3) + (leftLane ? width * 1.25 : width * 2.75)), altitude + height / 2);
     }
 
+    public Rect getHitBox() {
+        return this.hitBox;
+    }
+
     public void draw(Canvas canvas, Paint paint){
         canvas.drawRect(hitBox, paint);
     }
