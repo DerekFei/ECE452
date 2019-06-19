@@ -35,8 +35,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         windowWidth = size.x;
         windowHeight = size.y;
 
-        leftGoose = new Goose(true,windowWidth,windowHeight);
-        rightGoose = new Goose(false,windowWidth,windowHeight);
+        leftGoose = new Goose(true, windowWidth, windowHeight);
+        rightGoose = new Goose(false, windowWidth, windowHeight);
 
         setFocusable(true);
     }
@@ -72,7 +72,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                if(event.getX()<windowWidth/2)
+                if(event.getX() < windowWidth / 2)
                     leftGoose.update();
                 else
                     rightGoose.update();
@@ -91,9 +91,9 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawColor(Color.WHITE);
         Paint linePaint = new Paint();
         linePaint.setColor(Color.BLACK);
-        canvas.drawLine((float)windowWidth/4, (float)0,(float)windowWidth/4,(float)windowHeight, linePaint);
-        canvas.drawLine((float)windowWidth/2, (float)0,(float)windowWidth/2,(float)windowHeight, linePaint);
-        canvas.drawLine((float)windowWidth*3/4, (float)0,(float)windowWidth*3/4,(float)windowHeight, linePaint);
+        canvas.drawLine((float)windowWidth / 4, (float)0, (float)windowWidth / 4, (float)windowHeight, linePaint);
+        canvas.drawLine((float)windowWidth / 2, (float)0, (float)windowWidth / 2, (float)windowHeight, linePaint);
+        canvas.drawLine((float)windowWidth * 3 / 4, (float)0, (float)windowWidth * 3 / 4, (float)windowHeight, linePaint);
 
         leftGoose.draw(canvas);
         rightGoose.draw(canvas);
