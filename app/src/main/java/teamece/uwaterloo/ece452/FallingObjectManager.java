@@ -1,5 +1,6 @@
 package teamece.uwaterloo.ece452;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 
 import java.lang.ref.WeakReference;
@@ -12,14 +13,14 @@ public class FallingObjectManager {
     WeakReference<GameScene> gameScene;
     private FallingLED led1, led2, led3, led4;
 
-    public FallingObjectManager(int windowWidth, int windowHeight, GameScene gameScene) {
+    public FallingObjectManager(int windowWidth, int windowHeight, GameScene gameScene, Resources r) {
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
         this.gameScene = new WeakReference<>(gameScene);
-        led1 = new FallingLED(true, true, windowWidth, windowHeight);
-        led2 = new FallingLED(true, false, windowWidth, windowHeight);
-        led3 = new FallingLED(false, true, windowWidth, windowHeight);
-        led4 = new FallingLED(false, false, windowWidth, windowHeight);
+        led1 = new FallingLED(true, true, windowWidth, windowHeight, r);
+        led2 = new FallingLED(true, false, windowWidth, windowHeight, r);
+        led3 = new FallingLED(false, true, windowWidth, windowHeight, r);
+        led4 = new FallingLED(false, false, windowWidth, windowHeight, r);
         counter1 = ThreadLocalRandom.current().nextInt(0, 121);
         counter2 = ThreadLocalRandom.current().nextInt(0, 121);
         counter3 = ThreadLocalRandom.current().nextInt(0, 121);
