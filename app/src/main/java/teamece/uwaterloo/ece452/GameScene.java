@@ -1,6 +1,7 @@
 package teamece.uwaterloo.ece452;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,7 +10,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.Window;
+import android.graphics.Bitmap;
 import android.view.WindowManager;
 
 import java.lang.ref.WeakReference;
@@ -26,6 +27,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private FallingObjectManager mgr;
     private CollisionManager collisionManager;
 
+    private Bitmap ledImage;
+
     public  GameScene (Context context) {
         super(context);
 
@@ -40,10 +43,13 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         windowWidth = size.x;
         windowHeight = size.y;
 
+        Resources r = getResources();
+      
         leftGoose = new Goose(true, windowWidth, windowHeight);
         rightGoose = new Goose(false, windowWidth, windowHeight);
-        mgr = new FallingObjectManager(windowWidth, windowHeight, this);
+        mgr = new FallingObjectManager(windowWidth, windowHeight, this, r);
         this.collisionManager = new CollisionManager(leftGoose, rightGoose, this);
+      
         setFocusable(true);
     }
 
