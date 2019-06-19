@@ -45,8 +45,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
         Resources r = getResources();
       
-        leftGoose = new Goose(true, windowWidth, windowHeight);
-        rightGoose = new Goose(false, windowWidth, windowHeight);
+        leftGoose = new Goose(true, windowWidth, windowHeight, r);
+        rightGoose = new Goose(false, windowWidth, windowHeight, r);
         mgr = new FallingObjectManager(windowWidth, windowHeight, this, r);
         this.collisionManager = new CollisionManager(leftGoose, rightGoose, this);
       
