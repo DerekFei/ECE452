@@ -4,8 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-
-import java.io.Console;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 public abstract class FallingDevice implements GameObject {
     private boolean left;
@@ -17,8 +17,8 @@ public abstract class FallingDevice implements GameObject {
     private Rect hitBox;
 
     public FallingDevice(boolean left, boolean leftlane, int windowWidth, int windowHeight){
-        left = left;
-        leftLane = leftlane;
+        this.left = left;
+        this.leftLane = leftlane;
         width = windowWidth / 6;
         height = windowHeight / 8;
         altitude = - height / 2;
@@ -47,7 +47,10 @@ public abstract class FallingDevice implements GameObject {
                 (int)((left ? 0 : width * 3) + (leftLane ? width * 1.25 : width * 2.75)), altitude + height / 2);
     }
 
-    public void draw(Canvas canvas, Paint paint){
-        canvas.drawRect(hitBox, paint);
+    public void draw(Canvas canvas, Bitmap bm){
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        bm = Bitmap.createScaledBitmap(bm, width, height, false);
+        canvas.drawBitmap(bm, (int)((left ? 0 : width * 3) + (leftLane ? width * 0.25 : width * 1.75)), altitude - height / 2, p);
     }
 }
