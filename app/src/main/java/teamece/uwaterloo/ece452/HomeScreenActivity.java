@@ -16,4 +16,9 @@ public class HomeScreenActivity extends AppCompatActivity {
         Intent newGameActivity = new Intent(this, GameActivity.class);
         startActivity(newGameActivity);
     }
+
+    public void leaderBoard(View v) {
+        Intent newleaderBoard = new Intent(this, LeaderBoardActivity.class);
+        startActivity(newleaderBoard);
+    }
 }
