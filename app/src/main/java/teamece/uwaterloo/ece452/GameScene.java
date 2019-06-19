@@ -1,6 +1,7 @@
 package teamece.uwaterloo.ece452;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,8 +10,10 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.Window;
+import android.graphics.Bitmap;
 import android.view.WindowManager;
+
+import java.lang.ref.WeakReference;
 
 public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
@@ -20,6 +23,11 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     private int windowWidth;
     private int windowHeight;
+
+    private FallingObjectManager mgr;
+    private CollisionManager collisionManager;
+
+    private Bitmap ledImage;
 
     public  GameScene (Context context) {
         super(context);
@@ -35,11 +43,23 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         windowWidth = size.x;
         windowHeight = size.y;
 
-        leftGoose = new Goose(true,windowWidth,windowHeight);
-        rightGoose = new Goose(false,windowWidth,windowHeight);
-
+        Resources r = getResources();
+      
+        leftGoose = new Goose(true, windowWidth, windowHeight, r);
+        rightGoose = new Goose(false, windowWidth, windowHeight, r);
+        mgr = new FallingObjectManager(windowWidth, windowHeight, this, r);
+        this.collisionManager = new CollisionManager(leftGoose, rightGoose, this);
+      
         setFocusable(true);
     }
+
+    public void registerCollisionManager(FallingDevice device) {
+        if (device != null && this.collisionManager != null) {
+            this.collisionManager.addObjectToWatch(new WeakReference<>(device));
+        }
+    }
+
+
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -72,7 +92,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                if(event.getX()<windowWidth/2)
+                if(event.getX() < windowWidth / 2)
                     leftGoose.update();
                 else
                     rightGoose.update();
@@ -82,6 +102,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
+        mgr.update();
+        collisionManager.detect();
     }
 
     @Override
@@ -91,12 +113,13 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawColor(Color.WHITE);
         Paint linePaint = new Paint();
         linePaint.setColor(Color.BLACK);
-        canvas.drawLine((float)windowWidth/4, (float)0,(float)windowWidth/4,(float)windowHeight, linePaint);
-        canvas.drawLine((float)windowWidth/2, (float)0,(float)windowWidth/2,(float)windowHeight, linePaint);
-        canvas.drawLine((float)windowWidth*3/4, (float)0,(float)windowWidth*3/4,(float)windowHeight, linePaint);
+        canvas.drawLine((float)windowWidth / 4, (float)0, (float)windowWidth / 4, (float)windowHeight, linePaint);
+        canvas.drawLine((float)windowWidth / 2, (float)0, (float)windowWidth / 2, (float)windowHeight, linePaint);
+        canvas.drawLine((float)windowWidth * 3 / 4, (float)0, (float)windowWidth * 3 / 4, (float)windowHeight, linePaint);
 
         leftGoose.draw(canvas);
         rightGoose.draw(canvas);
+        mgr.draw(canvas);
     }
 
 }
