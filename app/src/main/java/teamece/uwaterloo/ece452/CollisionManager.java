@@ -1,5 +1,7 @@
 package teamece.uwaterloo.ece452;
 
+import android.graphics.Rect;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -17,21 +19,27 @@ public class CollisionManager {
     }
 
     public void addObjectToWatch(WeakReference<FallingDevice> device) {
-        devices.add(device);
+        this.devices.add(device);
     }
 
     public void detect() {
+        int size = this.devices.size();
+        System.out.println(size);
         for (int i = 0; i < devices.size(); i++) {
             if (leftGoose.get() != null && rightGoose.get() != null && devices.get(i).get() != null) {
-                if (devices.get(i).get().getHitBox().intersect(leftGoose.get().getHitBox())) {
-                    devices.get(i).get().initialize();
-                    System.out.println("colliding with left");
+                if (Rect.intersects(devices.get(i).get().getHitBox(), leftGoose.get().getHitBox())) {
+                    collide(devices.get(i), leftGoose);
                 }
-                if (devices.get(i).get().getHitBox().intersect(leftGoose.get().getHitBox())) {
-                    devices.get(i).get().initialize();
-                    System.out.println("colliding with right");
+                if (Rect.intersects(devices.get(i).get().getHitBox(), rightGoose.get().getHitBox())) {
+                    collide(devices.get(i), rightGoose);
                 }
             }
+        }
+    }
+
+    private void collide(WeakReference<FallingDevice> device, WeakReference<Goose> goose) {
+        if (gameScene.get() != null) {
+            gameScene.get().processCollision(device, goose);
         }
     }
 }
