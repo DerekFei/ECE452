@@ -55,7 +55,6 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     public void registerCollisionManager(WeakReference<FallingDevice> device) {
         if (device != null && collisionManager != null) {
-            System.out.println("added");
             collisionManager.addObjectToWatch(device);
         }
     }
