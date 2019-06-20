@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -27,7 +28,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private FallingObjectManager mgr;
     private CollisionManager collisionManager;
 
-    private Bitmap ledImage;
+    private int score;
 
     public  GameScene (Context context) {
         super(context);
@@ -42,6 +43,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         display.getSize(size);
         windowWidth = size.x;
         windowHeight = size.y;
+        score = 0;
 
         Resources r = getResources();
       
@@ -55,13 +57,17 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     public void registerCollisionManager(WeakReference<FallingDevice> device) {
         if (device != null && collisionManager != null) {
-            System.out.println("added");
             collisionManager.addObjectToWatch(device);
         }
     }
 
     public void processCollision(WeakReference<FallingDevice> device, WeakReference<Goose> goose) {
-        // do stuff here
+        if(device.get() instanceof FallingLED)
+        {
+            score += 1;
+        }
+
+        device.get().terminate();
     }
 
     @Override
@@ -72,7 +78,6 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         thread = new MainThread(getHolder(), this);
-
         thread.setRunning(true);
         thread.start();
     }
@@ -123,6 +128,17 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         leftGoose.draw(canvas);
         rightGoose.draw(canvas);
         mgr.draw(canvas);
-    }
 
+        Rect topBar = new Rect(0, 0, windowWidth, windowHeight/10);
+        Paint barPaint = new Paint();
+        barPaint.setColor(Color.WHITE);
+        canvas.drawRect(topBar, barPaint);
+
+        Paint textPaint = new Paint();
+        textPaint.setColor(Color.BLACK);
+        textPaint.setStrokeWidth(5);
+        textPaint.setTextSize(40);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText("Score: " + Integer.toString(score), windowWidth/2, windowHeight/20, textPaint);
+    }
 }

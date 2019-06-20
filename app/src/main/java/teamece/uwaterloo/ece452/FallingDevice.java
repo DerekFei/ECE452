@@ -57,4 +57,11 @@ public abstract class FallingDevice implements GameObject {
         bm = Bitmap.createScaledBitmap(bm, width, height, false);
         canvas.drawBitmap(bm, (int)((left ? 0 : width * 3) + (leftLane ? width * 0.25 : width * 1.75)), altitude - height / 2, p);
     }
+
+    public void terminate(){
+        start = false;;
+        altitude = - height / 2;
+        generateHitBox();
+    }
+
 }
