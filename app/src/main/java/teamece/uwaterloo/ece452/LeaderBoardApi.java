@@ -6,7 +6,6 @@ import retrofit2.http.GET;
 
 public interface LeaderBoardApi {
 
-//    @GET("api/attractionList")
-    @GET("login")
-    Call<List<LeaderBoard>> getRecord();
+    @GET("leaderboard")
+    Call<List<LeaderBoard>> getLeaderBoard();
 }

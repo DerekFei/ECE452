@@ -2,6 +2,7 @@ package teamece.uwaterloo.ece452;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.List;
@@ -22,18 +23,42 @@ public class LeaderBoardActivity extends AppCompatActivity {
 
         leaderBoardResult = findViewById(R.id.leader_board_result);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://hotels-dev-api.tobyx.io/")
+                .baseUrl("http://10.0.2.2:8080/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        String userId = "2";
+        UserApi userApi = retrofit.create(UserApi.class);
+        Call<User> userCall = userApi.getUser(userId);
+        userCall.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (!response.isSuccessful()) {
+                    leaderBoardResult.setText("Code: " + response.code());
+                    return;
+                }
+
+                User currentUser = response.body();
+                String content = "";
+                content += "Name: " + currentUser.getName() + " ";
+                content += "Score: " + currentUser.getScore() + "\n";
+
+                leaderBoardResult.append(content);
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("User Tag", t.getMessage());
+                leaderBoardResult.setText(t.getMessage());
+            }
+        });
+
         LeaderBoardApi leaderBoardApi = retrofit.create(LeaderBoardApi.class);
-        Call<List<LeaderBoard>> call = leaderBoardApi.getRecord();
+        Call<List<LeaderBoard>> call = leaderBoardApi.getLeaderBoard();
 
         call.enqueue(new Callback<List<LeaderBoard>>() {
             @Override
             public void onResponse(Call<List<LeaderBoard>> call, Response<List<LeaderBoard>> response) {
-                System.out.print("gggggggggggggggggggggggggggggggg");
-                System.out.print(response);
                 if (!response.isSuccessful()) {
                     leaderBoardResult.setText("Code: " + response.code());
                     return;
@@ -42,9 +67,11 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 List<LeaderBoard> userRecords = response.body();
                 for (LeaderBoard userRecord: userRecords) {
                     String content = "";
+                    String userID = userRecord.getUserId();
                     int score = userRecord.getScore();
-                    content += "Name: " + userRecord.getName() + "\n";
-                    content += "Score: " + score;
+
+                    content += "Name: " + userRecord.getName() + " ";
+                    content += "Score: " + score + "\n";
 
                     leaderBoardResult.append(content);
                 }
@@ -52,8 +79,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<LeaderBoard>> call, Throwable t) {
-                System.out.print("gggggggggggggggggggggggggggggggg");
-                System.out.print(t.getMessage());
+                Log.d("Leader Board Tag", t.getMessage());
                 leaderBoardResult.setText(t.getMessage());
             }
         });

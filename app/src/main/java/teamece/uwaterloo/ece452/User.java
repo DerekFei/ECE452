@@ -2,7 +2,7 @@ package teamece.uwaterloo.ece452;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LeaderBoard {
+public class User {
     @SerializedName("name")
     private String name;
 
