@@ -26,10 +26,10 @@ public class FallingObjectManager {
         counter3 = ThreadLocalRandom.current().nextInt(0, 121);
         counter4 = ThreadLocalRandom.current().nextInt(0, 121);
         if (this.gameScene.get() != null) {
-            this.gameScene.get().registerCollisionManager(led1);
-            this.gameScene.get().registerCollisionManager(led2);
-            this.gameScene.get().registerCollisionManager(led3);
-            this.gameScene.get().registerCollisionManager(led4);
+            this.gameScene.get().registerCollisionManager(new WeakReference<FallingDevice>(led1));
+            this.gameScene.get().registerCollisionManager(new WeakReference<FallingDevice>(led2));
+            this.gameScene.get().registerCollisionManager(new WeakReference<FallingDevice>(led3));
+            this.gameScene.get().registerCollisionManager(new WeakReference<FallingDevice>(led4));
         }
     }
 

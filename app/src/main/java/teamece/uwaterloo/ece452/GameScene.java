@@ -47,19 +47,22 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
       
         leftGoose = new Goose(true, windowWidth, windowHeight, r);
         rightGoose = new Goose(false, windowWidth, windowHeight, r);
+        collisionManager = new CollisionManager(leftGoose, rightGoose, this);
         mgr = new FallingObjectManager(windowWidth, windowHeight, this, r);
-        this.collisionManager = new CollisionManager(leftGoose, rightGoose, this);
-      
+
         setFocusable(true);
     }
 
-    public void registerCollisionManager(FallingDevice device) {
-        if (device != null && this.collisionManager != null) {
-            this.collisionManager.addObjectToWatch(new WeakReference<>(device));
+    public void registerCollisionManager(WeakReference<FallingDevice> device) {
+        if (device != null && collisionManager != null) {
+            System.out.println("added");
+            collisionManager.addObjectToWatch(device);
         }
     }
 
-
+    public void processCollision(WeakReference<FallingDevice> device, WeakReference<Goose> goose) {
+        // do stuff here
+    }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
