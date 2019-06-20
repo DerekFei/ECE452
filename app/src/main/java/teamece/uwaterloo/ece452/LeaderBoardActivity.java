@@ -3,7 +3,6 @@ package teamece.uwaterloo.ece452;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -17,7 +16,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LeaderBoardActivity extends AppCompatActivity {
-    private TextView leaderBoardResult;
+    private TextView userName;
+    private TextView userScore;
+    private TextView myName;
+    private TextView myScore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +30,11 @@ public class LeaderBoardActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_leaderboard_screen);
 
-        leaderBoardResult = findViewById(R.id.leader_board_result);
+        userName = findViewById(R.id.userName);
+        userScore = findViewById(R.id.userScore);
+        myName = findViewById(R.id.myName);
+        myScore = findViewById(R.id.myScore);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://54.147.208.46/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -41,22 +47,22 @@ public class LeaderBoardActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (!response.isSuccessful()) {
-                    leaderBoardResult.setText("Code: " + response.code());
                     return;
                 }
 
                 User currentUser = response.body();
-                String content = "";
-                content += "Name: " + currentUser.getName() + " ";
-                content += "Score: " + currentUser.getScore() + "\n";
+                String name = "";
+                String score = "";
+                name += currentUser.getName() + "\n";
+                score +=  currentUser.getScore() + "\n";
 
-                leaderBoardResult.append(content);
+                myName.append(name);
+                myScore.append(score);
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Log.d("User Tag", t.getMessage());
-                leaderBoardResult.setText(t.getMessage());
             }
         });
 
@@ -67,27 +73,24 @@ public class LeaderBoardActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<LeaderBoard>> call, Response<List<LeaderBoard>> response) {
                 if (!response.isSuccessful()) {
-                    leaderBoardResult.setText("Code: " + response.code());
                     return;
                 }
 
                 List<LeaderBoard> userRecords = response.body();
                 for (LeaderBoard userRecord: userRecords) {
-                    String content = "";
-                    String userID = userRecord.getUserId();
-                    int score = userRecord.getScore();
+                    String name = "";
+                    String score = "";
+                    name += userRecord.getName() + "\n";
+                    score +=  userRecord.getScore() + "\n";
 
-                    content += "Name: " + userRecord.getName() + " ";
-                    content += "Score: " + score + "\n";
-
-                    leaderBoardResult.append(content);
+                    userName.append(name);
+                    userScore.append(score);
                 }
             }
 
             @Override
             public void onFailure(Call<List<LeaderBoard>> call, Throwable t) {
                 Log.d("Leader Board Tag", t.getMessage());
-                leaderBoardResult.setText(t.getMessage());
             }
         });
     }
