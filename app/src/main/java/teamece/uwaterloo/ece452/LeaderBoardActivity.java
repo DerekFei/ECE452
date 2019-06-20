@@ -23,7 +23,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
 
         leaderBoardResult = findViewById(R.id.leader_board_result);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/")
+                .baseUrl("http://54.147.208.46/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
