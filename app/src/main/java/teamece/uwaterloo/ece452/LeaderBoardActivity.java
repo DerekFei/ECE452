@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -16,10 +19,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LeaderBoardActivity extends AppCompatActivity {
-    private TextView userName;
-    private TextView userScore;
-    private TextView myName;
-    private TextView myScore;
+    private ListView userName;
+    private ListView userScore;
+    private ListView myName;
+    private ListView myScore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +54,16 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 }
 
                 User currentUser = response.body();
-                String name = "";
-                String score = "";
-                name += currentUser.getName() + "\n";
-                score +=  currentUser.getScore() + "\n";
+                List<String> myNameList = new ArrayList<String>();
+                List<Integer> myScoreList = new ArrayList<Integer>();
 
-                myName.append(name);
-                myScore.append(score);
+                myNameList.add(currentUser.getName());
+                myScoreList.add(currentUser.getScore());
+                ArrayAdapter<String> myNameArrayAdapter = new ArrayAdapter <String>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, myNameList);
+                ArrayAdapter<Integer> myScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, myScoreList);
+
+                myName.setAdapter(myNameArrayAdapter);
+                myScore.setAdapter(myScoreArrayAdapter);
             }
 
             @Override
@@ -76,16 +82,18 @@ public class LeaderBoardActivity extends AppCompatActivity {
                     return;
                 }
 
+                List<String> userNameList = new ArrayList<String>();
+                List<Integer> userScoreList = new ArrayList<Integer>();
                 List<LeaderBoard> userRecords = response.body();
                 for (LeaderBoard userRecord: userRecords) {
-                    String name = "";
-                    String score = "";
-                    name += userRecord.getName() + "\n";
-                    score +=  userRecord.getScore() + "\n";
-
-                    userName.append(name);
-                    userScore.append(score);
+                    userNameList.add(userRecord.getName());
+                    userScoreList.add(userRecord.getScore());
                 }
+
+                ArrayAdapter<Integer> userScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, userScoreList);
+                ArrayAdapter<String> userNameArrayAdapter = new ArrayAdapter <String>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, userNameList);
+                userName.setAdapter(userNameArrayAdapter);
+                userScore.setAdapter(userScoreArrayAdapter);
             }
 
             @Override

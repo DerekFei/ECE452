@@ -6,6 +6,40 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/textView6"
+        android:layout_width="164dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="casual"
+        android:text="My Score"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.034"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.139" />
+
+    <ListView
+        android:id="@+id/myName"
+        android:layout_width="274dp"
+        android:layout_height="66dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:divider="#00000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.038"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.22" />
+
+    <TextView
         android:id="@+id/textView"
         android:layout_width="302dp"
         android:layout_height="56dp"
@@ -13,6 +47,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:fontFamily="casual"
         android:text="@string/title_leader_board"
         android:textAlignment="center"
         android:textColor="@android:color/black"
@@ -24,74 +59,71 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.012" />
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="355dp"
-        android:layout_height="602dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="8dp"
+    <ListView
+        android:id="@+id/userName"
+        android:layout_width="276dp"
+        android:layout_height="376dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:divider="#00000000"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.063"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.898" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <ListView
+        android:id="@+id/userScore"
+        android:layout_width="100dp"
+        android:layout_height="381dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:divider="#00000000"
+        android:gravity="end"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.993"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.901" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="153dp"
-                android:layout_height="588dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
+    <ListView
+        android:id="@+id/myScore"
+        android:layout_width="94dp"
+        android:layout_height="63dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:divider="#00000000"
+        android:gravity="end"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.973"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.218" />
 
-                <TextView
-                    android:id="@+id/myName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:lineHeight="50dp" />
-
-                <TextView
-                    android:id="@+id/userName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="textStart"
-                    app:lineHeight="50dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="169dp"
-                android:layout_height="586dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/myScore"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="textEnd"
-                    app:lineHeight="50dp" />
-
-                <TextView
-                    android:id="@+id/userScore"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="textEnd"
-                    app:lineHeight="50dp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="219dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="casual"
+        android:text="Game Leaders"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.328" />
 
 </android.support.constraint.ConstraintLayout>
