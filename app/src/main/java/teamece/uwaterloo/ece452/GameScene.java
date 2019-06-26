@@ -46,7 +46,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         windowWidth = size.x;
         windowHeight = size.y;
         score = 0;
-        life = 10;
+        life = 5;
 
         Resources r = getResources();
       
@@ -72,7 +72,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         }
         else if(device.get() instanceof FallingResistor)
         {
-            life -= 1;
+            if (life > 0) life -= 1;
         }
 
         device.get().terminate();
@@ -139,25 +139,18 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         rightGoose.draw(canvas);
         mgr.draw(canvas);
 
-        Paint textPaint = new Paint();
-        textPaint.setColor(Color.WHITE);
-        textPaint.setStrokeWidth(5);
-        textPaint.setTextSize(100);
-        textPaint.setTextAlign(Paint.Align.LEFT);
-        canvas.drawText("" + (score), 30, windowHeight/20, textPaint);
-
         Paint lifePaint = new Paint();
         lifePaint.setColor(Color.WHITE);
         lifePaint.setStrokeWidth(5);
         lifePaint.setTextSize(100);
         lifePaint.setTextAlign(Paint.Align.LEFT);
-        canvas.drawText("Life: " + Integer.toString(life), 80, windowHeight/20, lifePaint);
+        canvas.drawText("" + (life), 80, windowHeight/20, lifePaint);
 
         Paint scorePaint = new Paint();
         scorePaint.setColor(Color.WHITE);
         scorePaint.setStrokeWidth(5);
         scorePaint.setTextSize(100);
         scorePaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("Score: " + Integer.toString(score), windowWidth-80, windowHeight/20, scorePaint);
+        canvas.drawText("" + (score), windowWidth-80, windowHeight/20, scorePaint);
     }
 }
