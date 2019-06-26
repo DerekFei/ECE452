@@ -1,11 +1,14 @@
 package teamece.uwaterloo.ece452;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -66,6 +70,19 @@ public class LeaderBoardActivity extends AppCompatActivity {
             }
         });
 
+        //background
+        VideoView videoView = findViewById(R.id.videoView);
+        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video_bg;
+        Uri uri = Uri.parse(videoPath);
+        videoView.setVideoURI(uri);
+        videoView.start();
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
+
         LeaderBoardApi leaderBoardApi = retrofit.create(LeaderBoardApi.class);
         Call<List<LeaderBoard>> call = leaderBoardApi.getLeaderBoard();
 
@@ -91,6 +108,23 @@ public class LeaderBoardActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<LeaderBoard>> call, Throwable t) {
                 Log.d("Leader Board Tag", t.getMessage());
+            }
+        });
+    }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        VideoView videoView = findViewById(R.id.videoView);
+        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video_bg;
+        Uri uri = Uri.parse(videoPath);
+        videoView.setVideoURI(uri);
+        videoView.start();
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
             }
         });
     }
