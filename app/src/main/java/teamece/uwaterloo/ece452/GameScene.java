@@ -30,6 +30,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private WhiteLineManager whiteLineManager;
 
     private int score;
+    private int life;
 
     public  GameScene (Context context) {
         super(context);
@@ -45,6 +46,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         windowWidth = size.x;
         windowHeight = size.y;
         score = 0;
+        life = 10;
 
         Resources r = getResources();
       
@@ -67,6 +69,10 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         if(device.get() instanceof FallingLED)
         {
             score += 1;
+        }
+        else if(device.get() instanceof FallingResistor)
+        {
+            life -= 1;
         }
 
         device.get().terminate();
@@ -135,16 +141,18 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         rightGoose.draw(canvas);
         mgr.draw(canvas);
 
-        Rect topBar = new Rect(0, 0, windowWidth, windowHeight/10);
-        Paint barPaint = new Paint();
-        barPaint.setColor(Color.WHITE);
-        canvas.drawRect(topBar, barPaint);
+        Paint lifePaint = new Paint();
+        lifePaint.setColor(Color.WHITE);
+        lifePaint.setStrokeWidth(5);
+        lifePaint.setTextSize(100);
+        lifePaint.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("Life: " + Integer.toString(life), 80, windowHeight/20, lifePaint);
 
-        Paint textPaint = new Paint();
-        textPaint.setColor(Color.BLACK);
-        textPaint.setStrokeWidth(5);
-        textPaint.setTextSize(40);
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("Score: " + Integer.toString(score), windowWidth/2, windowHeight/20, textPaint);
+        Paint scorePaint = new Paint();
+        scorePaint.setColor(Color.WHITE);
+        scorePaint.setStrokeWidth(5);
+        scorePaint.setTextSize(100);
+        scorePaint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText("Score: " + Integer.toString(score), windowWidth-80, windowHeight/20, scorePaint);
     }
 }

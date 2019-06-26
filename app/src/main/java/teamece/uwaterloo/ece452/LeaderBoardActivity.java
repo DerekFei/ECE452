@@ -119,4 +119,21 @@ public class LeaderBoardActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        VideoView videoView = findViewById(R.id.videoView);
+        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video_bg;
+        Uri uri = Uri.parse(videoPath);
+        videoView.setVideoURI(uri);
+        videoView.start();
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
+    }
 }
