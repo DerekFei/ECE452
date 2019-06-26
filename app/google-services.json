@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1024701146338",
+    "firebase_url": "https://geece-2f011.firebaseio.com",
+    "project_id": "geece-2f011",
+    "storage_bucket": "geece-2f011.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024701146338:android:6e42e52bc3b75b4b",
+        "android_client_info": {
+          "package_name": "teamece.uwaterloo.ece452"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024701146338-2rfasfv4sp8mgru3i6f9d7s42c5e9dr9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "teamece.uwaterloo.ece452",
+            "certificate_hash": "682509e602cbfd6a857ac4735de5cef8b98be3fe"
+          }
+        },
+        {
+          "client_id": "1024701146338-mbfe5mpplsg601602u3jrc1kt2skas8c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYggW0POcfyDAosKTFHrq44hfv-dPELug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024701146338-mbfe5mpplsg601602u3jrc1kt2skas8c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

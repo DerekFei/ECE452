@@ -13,6 +13,7 @@ public class FallingLED extends FallingDevice implements GameObject {
         b=BitmapFactory.decodeResource(r, R.drawable.led);
     }
 
+    @Override
     public void draw(Canvas canvas){
         super.draw(canvas, b);
     }

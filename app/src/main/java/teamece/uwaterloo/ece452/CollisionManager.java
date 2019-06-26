@@ -24,7 +24,6 @@ public class CollisionManager {
 
     public void detect() {
         int size = this.devices.size();
-        System.out.println(size);
         for (int i = 0; i < devices.size(); i++) {
             if (leftGoose.get() != null && rightGoose.get() != null && devices.get(i).get() != null) {
                 if (Rect.intersects(devices.get(i).get().getHitBox(), leftGoose.get().getHitBox())) {
