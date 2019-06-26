@@ -1,10 +1,13 @@
 package teamece.uwaterloo.ece452;
 
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -39,7 +42,6 @@ public class LeaderBoardActivity extends AppCompatActivity {
 
         userName = findViewById(R.id.userName);
         userScore = findViewById(R.id.userScore);
-        myName = findViewById(R.id.myName);
         myScore = findViewById(R.id.myScore);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -61,13 +63,18 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 List<String> myNameList = new ArrayList<String>();
                 List<Integer> myScoreList = new ArrayList<Integer>();
 
-                myNameList.add(currentUser.getName());
                 myScoreList.add(currentUser.getScore());
-                ArrayAdapter<String> myNameArrayAdapter = new ArrayAdapter <String>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, myNameList);
-                ArrayAdapter<Integer> myScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, myScoreList);
+                ArrayAdapter<Integer> myScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, myScoreList) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        TextView textView=(TextView) super.getView(position, convertView, parent);
+                        textView.setTextColor(Color.WHITE);
 
-                myName.setAdapter(myNameArrayAdapter);
+                        return textView;
+                    }
+                };
                 myScore.setAdapter(myScoreArrayAdapter);
+
             }
 
             @Override
@@ -107,8 +114,24 @@ public class LeaderBoardActivity extends AppCompatActivity {
                     userScoreList.add(userRecord.getScore());
                 }
 
-                ArrayAdapter<Integer> userScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, userScoreList);
-                ArrayAdapter<String> userNameArrayAdapter = new ArrayAdapter <String>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, userNameList);
+                ArrayAdapter<Integer> userScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, userScoreList) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        TextView textView=(TextView) super.getView(position, convertView, parent);
+                        textView.setTextColor(Color.WHITE);
+
+                        return textView;
+                    }
+                };
+                ArrayAdapter<String> userNameArrayAdapter = new ArrayAdapter <String>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, userNameList) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        TextView textView=(TextView) super.getView(position, convertView, parent);
+                        textView.setTextColor(Color.WHITE);
+
+                        return textView;
+                    }
+                };
                 userName.setAdapter(userNameArrayAdapter);
                 userScore.setAdapter(userScoreArrayAdapter);
             }
