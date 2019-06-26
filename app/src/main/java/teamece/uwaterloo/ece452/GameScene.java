@@ -86,16 +86,14 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry = true;
-        while (true) {
-            try {
-                thread.setRunning(false);
-                thread.join();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            retry = false;
+//        boolean retry = true;
+        try {
+            thread.setRunning(false);
+            thread.join();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+//        retry = false;
     }
 
     @Override
@@ -135,16 +133,11 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         rightGoose.draw(canvas);
         mgr.draw(canvas);
 
-        Rect topBar = new Rect(0, 0, windowWidth, windowHeight/10);
-        Paint barPaint = new Paint();
-        barPaint.setColor(Color.WHITE);
-        canvas.drawRect(topBar, barPaint);
-
         Paint textPaint = new Paint();
-        textPaint.setColor(Color.BLACK);
+        textPaint.setColor(Color.WHITE);
         textPaint.setStrokeWidth(5);
-        textPaint.setTextSize(40);
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("Score: " + Integer.toString(score), windowWidth/2, windowHeight/20, textPaint);
+        textPaint.setTextSize(100);
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("" + (score), 30, windowHeight/20, textPaint);
     }
 }
