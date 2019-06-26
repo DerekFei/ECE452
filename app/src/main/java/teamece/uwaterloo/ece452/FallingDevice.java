@@ -12,6 +12,8 @@ public abstract class FallingDevice implements GameObject {
     private boolean leftLane;
     private int width;
     private int height;
+    private int windowHeight;
+    private int windowWidth;
     private int altitude;
     private boolean start;
     private Rect hitBox;
@@ -19,19 +21,21 @@ public abstract class FallingDevice implements GameObject {
     public FallingDevice(boolean left, boolean leftlane, int windowWidth, int windowHeight){
         this.left = left;
         this.leftLane = leftlane;
-        width = windowWidth / 6;
-        height = windowHeight / 8;
+        this.windowWidth = windowWidth;
+        this.windowHeight = windowHeight;
+        width = 250;
+        height = 250;
         altitude = - height / 2;
         start = false;
-        hitBox = new Rect((int)((left ? 0 : width * 3) + (leftLane ? width * 0.25 : width * 1.75)), 0,
-                (int)((left ? 0 : width * 3) + (leftLane ? width * 1.25 : width * 2.75)), 0);
+        hitBox = new Rect(((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) - width / 2), altitude - height / 2,
+                ((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) + width / 2), altitude + height / 2);
     }
 
     public void update(){
         if(start) {
             altitude = altitude + 20;
             generateHitBox();
-            if(altitude>9*height)
+            if(altitude>windowHeight+height)
                 start = false;
         }
     }
@@ -43,8 +47,8 @@ public abstract class FallingDevice implements GameObject {
     }
 
     private void generateHitBox(){
-        hitBox.set((int)((left ? 0 : width * 3) + (leftLane ? width * 0.25 : width * 1.75)), altitude - height / 2,
-                (int)((left ? 0 : width * 3) + (leftLane ? width * 1.25 : width * 2.75)), altitude + height / 2);
+        hitBox.set(((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) - width / 2), altitude - height / 2,
+                ((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) + width / 2), altitude + height / 2);
     }
 
     public Rect getHitBox() {
@@ -52,10 +56,10 @@ public abstract class FallingDevice implements GameObject {
     }
 
     public void draw(Canvas canvas, Bitmap bm){
+        bm = Bitmap.createScaledBitmap(bm, width, height, false);
         Paint p = new Paint();
         p.setColor(Color.WHITE);
-        bm = Bitmap.createScaledBitmap(bm, width, height, false);
-        canvas.drawBitmap(bm, (int)((left ? 0 : width * 3) + (leftLane ? width * 0.25 : width * 1.75)), altitude - height / 2, p);
+        canvas.drawBitmap(bm, hitBox.left, hitBox.top, p);
     }
 
     public void terminate(){

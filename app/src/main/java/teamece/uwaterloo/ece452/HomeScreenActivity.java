@@ -44,4 +44,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         Intent leaderBoardActivity = new Intent(this, LeaderBoardActivity.class);
         startActivity(leaderBoardActivity);
     }
+
+    public void helpOnClick(View v) {
+        System.out.println("Help clicked");
+    }
 }
