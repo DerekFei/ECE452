@@ -10,7 +10,7 @@ public class FallingLED extends FallingDevice implements GameObject {
 
     public FallingLED(boolean left, boolean leftlane, int windowWidth, int windowHeight, Resources r){
         super(left, leftlane, windowWidth, windowHeight);
-        b=BitmapFactory.decodeResource(r, R.drawable.led);
+        b=BitmapFactory.decodeResource(r, R.drawable.led_green);
     }
 
     @Override

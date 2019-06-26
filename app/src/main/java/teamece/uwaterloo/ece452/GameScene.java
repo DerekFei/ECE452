@@ -27,6 +27,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     private FallingObjectManager mgr;
     private CollisionManager collisionManager;
+    private WhiteLineManager whiteLineManager;
 
     private int score;
 
@@ -51,6 +52,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         rightGoose = new Goose(false, windowWidth, windowHeight, r);
         collisionManager = new CollisionManager(leftGoose, rightGoose, this);
         mgr = new FallingObjectManager(windowWidth, windowHeight, this, r);
+        whiteLineManager = new WhiteLineManager(windowWidth, windowHeight);
 
         setFocusable(true);
     }
@@ -112,18 +114,22 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     public void update() {
         mgr.update();
         collisionManager.detect();
+        whiteLineManager.update();
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        canvas.drawColor(Color.WHITE);
-        Paint linePaint = new Paint();
-        linePaint.setColor(Color.BLACK);
-        canvas.drawLine((float)windowWidth / 4, (float)0, (float)windowWidth / 4, (float)windowHeight, linePaint);
-        canvas.drawLine((float)windowWidth / 2, (float)0, (float)windowWidth / 2, (float)windowHeight, linePaint);
-        canvas.drawLine((float)windowWidth * 3 / 4, (float)0, (float)windowWidth * 3 / 4, (float)windowHeight, linePaint);
+        canvas.drawColor(Color.DKGRAY);
+        Paint yellowLinePaint = new Paint();
+        yellowLinePaint.setColor(Color.YELLOW);
+        Rect leftYellowLine = new Rect(windowWidth / 2 - 15, 0, windowWidth / 2 - 5, windowHeight);
+        Rect rightYellowLine = new Rect(windowWidth / 2 + 5, 0, windowWidth / 2 + 15, windowHeight);
+        canvas.drawRect(leftYellowLine, yellowLinePaint);
+        canvas.drawRect(rightYellowLine, yellowLinePaint);
+
+        whiteLineManager.draw(canvas);
 
         leftGoose.draw(canvas);
         rightGoose.draw(canvas);

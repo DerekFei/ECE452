@@ -14,24 +14,28 @@ public class Goose implements GameObject {
     private boolean leftLane;
     private int width;
     private int height;
+    private int windowHeight;
+    private int windowWidth;
     private Resources r;
 
     public Goose(boolean l, int windowWidth, int windowHeight, Resources r){
         left = l;
         leftLane = l;
         this.r=r;
-        width = windowWidth / 6;
-        height = windowHeight / 6;
-        hitBox = new Rect((int)((left ? 0 : width * 3) + (leftLane ? width * 0.25 : width * 1.75)), height * 5,
-                (int)((left ? 0 : width * 3) + (leftLane ? width * 1.25 : width * 2.75)), height * 6);
+        this.windowWidth = windowWidth;
+        this.windowHeight = windowHeight;
+        width = 250;
+        height = 250;
+        hitBox = new Rect(((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) - width / 2), windowHeight - height,
+                ((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) + width / 2), windowHeight);
     }
 
     public void draw(Canvas canvas){
-        Bitmap bm = BitmapFactory.decodeResource(r, R.drawable.goose);
+        Bitmap bm = BitmapFactory.decodeResource(r, R.drawable.goose_eater);
         bm = Bitmap.createScaledBitmap(bm, width, height, false);
         Paint p = new Paint();
         p.setColor(Color.WHITE);
-        canvas.drawBitmap(bm, (int)((left ? 0 : width * 3) + (leftLane ? width * 0.25 : width * 1.75)), height * 5, p);
+        canvas.drawBitmap(bm, hitBox.left, hitBox.top, p);
     }
 
     public void update(){
@@ -44,7 +48,7 @@ public class Goose implements GameObject {
     }
 
     private void generateHitBox(){
-        hitBox.set((int)((left ? 0 : width * 3) + (leftLane ? width * 0.25 : width * 1.75)), height * 5,
-                (int)((left ? 0 : width * 3) + (leftLane ? width * 1.25 : width * 2.75)), height * 6);
+        hitBox.set(((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) - width / 2), windowHeight - height,
+                ((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) + width / 2), windowHeight);
     }
 }
