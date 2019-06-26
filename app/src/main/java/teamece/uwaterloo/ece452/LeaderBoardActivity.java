@@ -1,15 +1,21 @@
 package teamece.uwaterloo.ece452;
 
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -19,10 +25,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LeaderBoardActivity extends AppCompatActivity {
-    private TextView userName;
-    private TextView userScore;
-    private TextView myName;
-    private TextView myScore;
+    private ListView userName;
+    private ListView userScore;
+    private ListView myName;
+    private ListView myScore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +42,6 @@ public class LeaderBoardActivity extends AppCompatActivity {
 
         userName = findViewById(R.id.userName);
         userScore = findViewById(R.id.userScore);
-        myName = findViewById(R.id.myName);
         myScore = findViewById(R.id.myScore);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -55,13 +60,21 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 }
 
                 User currentUser = response.body();
-                String name = "";
-                String score = "";
-                name += currentUser.getName() + "\n";
-                score +=  currentUser.getScore() + "\n";
+                List<String> myNameList = new ArrayList<String>();
+                List<Integer> myScoreList = new ArrayList<Integer>();
 
-                myName.append(name);
-                myScore.append(score);
+                myScoreList.add(currentUser.getScore());
+                ArrayAdapter<Integer> myScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, myScoreList) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        TextView textView=(TextView) super.getView(position, convertView, parent);
+                        textView.setTextColor(Color.WHITE);
+
+                        return textView;
+                    }
+                };
+                myScore.setAdapter(myScoreArrayAdapter);
+
             }
 
             @Override
@@ -93,16 +106,34 @@ public class LeaderBoardActivity extends AppCompatActivity {
                     return;
                 }
 
+                List<String> userNameList = new ArrayList<String>();
+                List<Integer> userScoreList = new ArrayList<Integer>();
                 List<LeaderBoard> userRecords = response.body();
                 for (LeaderBoard userRecord: userRecords) {
-                    String name = "";
-                    String score = "";
-                    name += userRecord.getName() + "\n";
-                    score +=  userRecord.getScore() + "\n";
-
-                    userName.append(name);
-                    userScore.append(score);
+                    userNameList.add(userRecord.getName());
+                    userScoreList.add(userRecord.getScore());
                 }
+
+                ArrayAdapter<Integer> userScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, userScoreList) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        TextView textView=(TextView) super.getView(position, convertView, parent);
+                        textView.setTextColor(Color.WHITE);
+
+                        return textView;
+                    }
+                };
+                ArrayAdapter<String> userNameArrayAdapter = new ArrayAdapter <String>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, userNameList) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        TextView textView=(TextView) super.getView(position, convertView, parent);
+                        textView.setTextColor(Color.WHITE);
+
+                        return textView;
+                    }
+                };
+                userName.setAdapter(userNameArrayAdapter);
+                userScore.setAdapter(userScoreArrayAdapter);
             }
 
             @Override
