@@ -46,7 +46,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         windowWidth = size.x;
         windowHeight = size.y;
         score = 0;
-        life = 10;
+        life = 5;
 
         Resources r = getResources();
       
@@ -72,7 +72,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         }
         else if(device.get() instanceof FallingResistor)
         {
-            life -= 1;
+            if (life > 0) life -= 1;
         }
 
         device.get().terminate();
@@ -92,16 +92,14 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry = true;
-        while (true) {
-            try {
-                thread.setRunning(false);
-                thread.join();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            retry = false;
+//        boolean retry = true;
+        try {
+            thread.setRunning(false);
+            thread.join();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+//        retry = false;
     }
 
     @Override
@@ -146,13 +144,13 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         lifePaint.setStrokeWidth(5);
         lifePaint.setTextSize(100);
         lifePaint.setTextAlign(Paint.Align.LEFT);
-        canvas.drawText("Life: " + Integer.toString(life), 80, windowHeight/20, lifePaint);
+        canvas.drawText("" + (life), 80, windowHeight/20, lifePaint);
 
         Paint scorePaint = new Paint();
         scorePaint.setColor(Color.WHITE);
         scorePaint.setStrokeWidth(5);
         scorePaint.setTextSize(100);
         scorePaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("Score: " + Integer.toString(score), windowWidth-80, windowHeight/20, scorePaint);
+        canvas.drawText("" + (score), windowWidth-80, windowHeight/20, scorePaint);
     }
 }
