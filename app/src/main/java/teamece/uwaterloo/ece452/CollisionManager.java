@@ -23,14 +23,13 @@ public class CollisionManager {
     }
 
     public void detect() {
-        int size = this.devices.size();
-        for (int i = 0; i < devices.size(); i++) {
-            if (leftGoose.get() != null && rightGoose.get() != null && devices.get(i).get() != null) {
-                if (Rect.intersects(devices.get(i).get().getHitBox(), leftGoose.get().getHitBox())) {
-                    collide(devices.get(i), leftGoose);
+        for (WeakReference<FallingDevice> device : devices) {
+            if (leftGoose.get() != null && rightGoose.get() != null && device.get() != null) {
+                if (Rect.intersects(device.get().getHitBox(), leftGoose.get().getHitBox())) {
+                    collide(device, leftGoose);
                 }
-                if (Rect.intersects(devices.get(i).get().getHitBox(), rightGoose.get().getHitBox())) {
-                    collide(devices.get(i), rightGoose);
+                if (Rect.intersects(device.get().getHitBox(), rightGoose.get().getHitBox())) {
+                    collide(device, rightGoose);
                 }
             }
         }

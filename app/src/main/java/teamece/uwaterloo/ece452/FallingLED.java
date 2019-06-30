@@ -10,8 +10,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class FallingLED extends FallingDevice implements GameObject {
     Bitmap b;
 
-    public FallingLED(boolean left, boolean leftlane, int windowWidth, int windowHeight, Resources r){
-        super(left, leftlane, windowWidth, windowHeight);
+    public FallingLED(boolean left, boolean leftLane, int windowWidth, int windowHeight, Resources r){
+        super(left, leftLane, windowWidth, windowHeight);
         int counter = ThreadLocalRandom.current().nextInt(1, 4);
         int color;
         System.out.println("" + counter);
