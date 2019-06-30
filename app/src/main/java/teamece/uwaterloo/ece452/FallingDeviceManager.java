@@ -30,7 +30,12 @@ public class FallingDeviceManager {
         this.spawnInterval = initialSpawnInterval;
         this.devices = new ArrayList<>();
         this.context = context;
-        spawnNewObject();
+
+        int currY = -5 * screenHeight / 4;
+        while (currY < 0) {
+            spawnNewObject(50, currY, 300, currY + 250);
+            currY += 250 + spawnInterval;
+        }
     }
 
     //        new Rect(((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) - width / 2), altitude - height / 2, ((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) + width / 2), altitude + height / 2);
@@ -39,6 +44,7 @@ public class FallingDeviceManager {
         int elapsedTime = (int) (System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();
         float speed = (float) (Math.sqrt(1 + (startTime - initTime)/4000.0)) * screenHeight / (10000.0f); // time in ms for an object to move down
+        if (speed > 1) speed = 1;
         for (FallingDevice device : devices) {
             device.update(speed * elapsedTime);
         }
@@ -48,12 +54,17 @@ public class FallingDeviceManager {
                 if (this.gameScene.get() != null) {
                     this.gameScene.get().unregisterFirstDeviceFromCollisionManager();
                 }
+                spawnNewObject();
             }
         }
     }
 
     private void spawnNewObject() {
-        FallingDevice device = new FallingLED(new Rect(50, -250, 300,  0), BitmapFactory.decodeResource(context.getResources(), R.drawable.led_red));
+        spawnNewObject(50, -250, 300, 0);
+    }
+
+    private void spawnNewObject(int l, int t, int r, int b) {
+        FallingDevice device = new FallingLED(new Rect(l, t, r,  b), BitmapFactory.decodeResource(context.getResources(), R.drawable.led_red));
         devices.add(device);
         if (this.gameScene.get() != null) {
             this.gameScene.get().registerCollisionManager(new WeakReference<>(device));
