@@ -1,11 +1,14 @@
 package teamece.uwaterloo.ece452;
 
+import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 public class FallingHalogen extends FallingDevice implements GameObject {
 
-    public FallingHalogen(boolean left, boolean leftlane, int windowWidth, int windowHeight) {
-        super(left, leftlane, windowWidth, windowHeight);
+    public FallingHalogen(Rect rect, int resID, Context context){
+        super(rect, BitmapFactory.decodeResource(context.getResources(), resID));
     }
     @Override
     public void draw(Canvas canvas) {

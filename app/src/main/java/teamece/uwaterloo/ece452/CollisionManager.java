@@ -21,16 +21,16 @@ public class CollisionManager {
     public void addObjectToWatch(WeakReference<FallingDevice> device) {
         this.devices.add(device);
     }
-
+    public void removeFirstObject() { this.devices.remove(0); }
     public void detect() {
+        if (leftGoose.get() == null || rightGoose.get() == null) return;
         for (WeakReference<FallingDevice> device : devices) {
-            if (leftGoose.get() != null && rightGoose.get() != null && device.get() != null) {
-                if (Rect.intersects(device.get().getHitBox(), leftGoose.get().getHitBox())) {
-                    collide(device, leftGoose);
-                }
-                if (Rect.intersects(device.get().getHitBox(), rightGoose.get().getHitBox())) {
-                    collide(device, rightGoose);
-                }
+            if (device.get() == null) continue;
+            if (Rect.intersects(device.get().getHitBox(), leftGoose.get().getHitBox())) {
+                collide(device, leftGoose);
+            }
+            if (Rect.intersects(device.get().getHitBox(), rightGoose.get().getHitBox())) {
+                collide(device, rightGoose);
             }
         }
     }
