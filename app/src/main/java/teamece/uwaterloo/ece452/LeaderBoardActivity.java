@@ -51,6 +51,8 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 .build();
 
         String userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userId", "defaultStringIfNothingFound");
+        userId = "\"" + userId + "\"";
+
         UserApi userApi = retrofit.create(UserApi.class);
         Call<User> userCall = userApi.getUser(userId);
         userCall.enqueue(new Callback<User>() {

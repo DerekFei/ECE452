@@ -172,8 +172,6 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         String name = PreferenceManager.getDefaultSharedPreferences(this.getContext()).getString("username", "defaultStringIfNothingFound");
         String userId = PreferenceManager.getDefaultSharedPreferences(this.getContext()).getString("userId", "defaultStringIfNothingFound");
 
-        Log.d("Tag", name);
-
         Call<PostScore> postScoreCall = postScoreApi.postScore(userId, name, score);
         postScoreCall.enqueue(new Callback<PostScore>() {
             @Override
