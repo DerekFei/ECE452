@@ -3,6 +3,7 @@ package teamece.uwaterloo.ece452;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -57,8 +58,13 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null ){
+                    String userName = user.getDisplayName();
+                    String userId = user.getUid();
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("username", userName).apply();
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("userId", userId).apply();
+                }
                 // ...
-                Log.d("tag", "sssss***************");
                 Intent homeScreenActivity = new Intent(this, HomeScreenActivity.class);
                 startActivity(homeScreenActivity);
             } else {
