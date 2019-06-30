@@ -7,12 +7,20 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.Bitmap;
 import android.view.WindowManager;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.lang.ref.WeakReference;
 
@@ -152,5 +160,31 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         scorePaint.setTextSize(100);
         scorePaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText("" + (score), windowWidth-80, windowHeight/20, scorePaint);
+    }
+
+    public void uploadScore(int score) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://54.147.208.46/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        PostScoreApi postScoreApi = retrofit.create(PostScoreApi.class);
+        String name = PreferenceManager.getDefaultSharedPreferences(this.getContext()).getString("username", "defaultStringIfNothingFound");
+        String userId = PreferenceManager.getDefaultSharedPreferences(this.getContext()).getString("userId", "defaultStringIfNothingFound");
+
+        Log.d("Tag", name);
+
+        Call<PostScore> postScoreCall = postScoreApi.postScore(userId, name, score);
+        postScoreCall.enqueue(new Callback<PostScore>() {
+            @Override
+            public void onResponse(Call<PostScore> call, Response<PostScore> response) {
+                Log.d("Tag", "Post Score Success");
+            }
+
+            @Override
+            public void onFailure(Call<PostScore> call, Throwable t) {
+                Log.d("Tag", t.getMessage());
+            }
+        });
     }
 }
