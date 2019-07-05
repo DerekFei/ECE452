@@ -48,6 +48,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private int score;
     private int life;
     private boolean dead;
+    private boolean paused;
+    private boolean recording;
 
     private Resources r;
 
@@ -69,6 +71,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         score = 0;
         life = 10;
         dead = false;
+        paused = false;
       
         leftGoose = new Goose(true, windowWidth, windowHeight, r);
         rightGoose = new Goose(false, windowWidth, windowHeight, r);
@@ -130,7 +133,46 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(dead)
+        if(paused && !dead)
+        {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (Math.pow((event.getX() - windowWidth / 2), 2) + Math.pow((event.getY() - windowHeight / 10), 2) < Math.pow(windowWidth / 8, 2)) {
+                        paused = false;
+                    }
+                    else if(Math.pow((event.getX() - windowWidth / 4), 2) + Math.pow((event.getY() - windowHeight*4/5), 2) < Math.pow(windowWidth / 12, 2))
+                    {
+                        if(recording) {
+                            recording = false;
+                            //Stop recording. The video should be ready at this point
+                        }
+                        else
+                        {
+                            recording = true;
+                            //Start recording.
+                        }
+                    }
+                    else if(Math.pow((event.getX() - windowWidth * 3 / 4), 2) + Math.pow((event.getY() - windowHeight*4/5), 2) < Math.pow(windowWidth / 12, 2))
+                    {
+                        Intent homeActivity = new Intent(getContext(), HomeScreenActivity.class);
+                        getContext().startActivity(homeActivity);
+                    }
+            }
+        }
+        else if(!paused && !dead)
+        {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (Math.pow((event.getX() - windowWidth / 2), 2) + Math.pow((event.getY() - windowHeight / 10), 2) < Math.pow(windowWidth / 8, 2)) {
+                        paused = true;
+                    }
+                    else if (event.getX() < windowWidth / 2)
+                        leftGoose.update();
+                    else
+                        rightGoose.update();
+            }
+        }
+        else if(dead)
         {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -165,10 +207,6 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         else {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    if (event.getX() < windowWidth / 2)
-                        leftGoose.update();
-                    else
-                        rightGoose.update();
             }
         }
 
@@ -176,7 +214,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
-        if(!dead) {
+        if(!dead && !paused) {
             mgr.update();
             collisionManager.detect();
             whiteLineManager.update();
@@ -215,7 +253,55 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         scorePaint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText("" + (score), windowWidth, windowHeight/20, scorePaint);
 
-        if(dead)
+        Paint pausePaint = new Paint();
+        pausePaint.setAlpha(100);
+        if(paused && !dead)
+        {
+            Paint tintPaint = new Paint();
+            tintPaint.setColor(Color.BLACK);
+            tintPaint.setAlpha(200);
+            canvas.drawRect(0,0,windowWidth,windowHeight,tintPaint);
+
+            Bitmap resumeBm = BitmapFactory.decodeResource(r, R.drawable.resume);
+            resumeBm = Bitmap.createScaledBitmap(resumeBm, windowWidth / 4, windowWidth / 4, false);
+            canvas.drawBitmap(resumeBm, windowWidth * 3 / 8, windowHeight / 10 - windowWidth / 8, pausePaint);
+
+            Paint pauseTextPaint = new Paint();
+            pauseTextPaint.setColor(Color.WHITE);
+            pauseTextPaint.setStrokeWidth(5);
+            pauseTextPaint.setTextSize(windowWidth/12);
+            pauseTextPaint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText("GAME PAUSED", windowWidth/2, windowHeight*2/5, pauseTextPaint);
+
+            Paint circlePaint = new Paint();
+            circlePaint.setStyle(Paint.Style.STROKE);
+            circlePaint.setColor(Color.WHITE);
+            canvas.drawCircle(windowWidth/4, windowHeight*4/5, windowWidth/6, circlePaint);
+            canvas.drawCircle(windowWidth*3/4, windowHeight*4/5, windowWidth/6, circlePaint);
+
+            Paint bitMapPaint = new Paint();
+            bitMapPaint.setColor(Color.WHITE);
+            if(recording)
+            {
+                Bitmap stopBm = BitmapFactory.decodeResource(r, R.drawable.stop_record);
+                stopBm = Bitmap.createScaledBitmap(stopBm, windowWidth/6, windowWidth/6, false);
+                canvas.drawBitmap(stopBm, windowWidth / 6, windowHeight * 4 / 5 - windowWidth / 12, bitMapPaint);
+            }
+            else {
+                Bitmap recordBm = BitmapFactory.decodeResource(r, R.drawable.record);
+                recordBm = Bitmap.createScaledBitmap(recordBm, windowWidth / 6, windowWidth / 6, false);
+                canvas.drawBitmap(recordBm, windowWidth / 6, windowHeight * 4 / 5 - windowWidth / 12, bitMapPaint);
+            }
+            Bitmap homeBm = BitmapFactory.decodeResource(r, R.drawable.gameover_home);
+            homeBm = Bitmap.createScaledBitmap(homeBm, windowWidth/6, windowWidth/6, false);
+            canvas.drawBitmap(homeBm, windowWidth*2/3, windowHeight*4/5-windowWidth/12, bitMapPaint);
+        }
+        else if (!paused && !dead){
+            Bitmap pauseBm = BitmapFactory.decodeResource(r, R.drawable.pause);
+            pauseBm = Bitmap.createScaledBitmap(pauseBm, windowWidth / 4, windowWidth / 4, false);
+            canvas.drawBitmap(pauseBm, windowWidth * 3 / 8, windowHeight / 10 - windowWidth / 8, pausePaint);
+        }
+        else
         {
             Paint tintPaint = new Paint();
             tintPaint.setColor(Color.BLACK);
