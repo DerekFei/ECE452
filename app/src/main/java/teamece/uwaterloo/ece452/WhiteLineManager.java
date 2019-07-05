@@ -42,13 +42,19 @@ public class WhiteLineManager {
             RL[i].bottom += modifier;
             if(LL[i].top >= h)
             {
-                LL[i].top = - h / 3;
-                LL[i].bottom = - h * 2 / 9;
+                if(i == 3)
+                    LL[i].top = - h / 3 + LL[0].top;
+                else
+                    LL[i].top = LL[i+1].top - h / 3;
+                LL[i].bottom = LL[i].top + h / 9;
             }
             if(RL[i].top >= h)
             {
-                RL[i].top = - h / 3;
-                RL[i].bottom = - h * 2 / 9;
+                if(i == 3)
+                    RL[i].top = - h / 3 + RL[0].top;
+                else
+                    RL[i].top = RL[i+1].top - h / 3;
+                RL[i].bottom = RL[i].top + h / 9;
             }
         }
     }
