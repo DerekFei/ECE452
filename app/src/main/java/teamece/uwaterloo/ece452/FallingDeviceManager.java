@@ -30,15 +30,9 @@ public class FallingDeviceManager {
         this.spawnInterval = initialSpawnInterval;
         this.devices = new ArrayList<>();
         this.context = context;
-
-        int currY = -5 * screenHeight / 4;
-        while (currY < 0) {
-            spawnNewObject(50, currY, 300, currY + 250);
-            currY += 250 + spawnInterval;
-        }
     }
 
-    //        new Rect(((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) - width / 2), altitude - height / 2, ((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) + width / 2), altitude + height / 2);
+    // new Rect(((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) - width / 2), altitude - height / 2, ((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) + width / 2), altitude + height / 2);
 
     public void update(){
         int elapsedTime = (int) (System.currentTimeMillis() - startTime);
@@ -47,14 +41,9 @@ public class FallingDeviceManager {
         if (speed > 1) speed = 1;
         for (FallingDevice device : devices) {
             device.update(speed * elapsedTime);
-        }
-        if (devices.size() > 0) {
-            if (devices.get(0).getHitBox().top >= screenHeight) {
-                devices.remove(0);
-                if (this.gameScene.get() != null) {
-                    this.gameScene.get().unregisterFirstDeviceFromCollisionManager();
-                }
-                spawnNewObject();
+            if (device.getHitBox().top >= screenHeight) {
+                devices.remove(device);
+                this.gameScene.get().unregisterExpiredDevices();
             }
         }
     }

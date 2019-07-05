@@ -52,7 +52,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
       
         leftGoose = new Goose(true, windowWidth, windowHeight, r);
         rightGoose = new Goose(false, windowWidth, windowHeight, r);
-        collisionManager = new CollisionManager(leftGoose, rightGoose, this);
+        collisionManager = new CollisionManager(leftGoose, rightGoose, this, windowHeight);
         mgr = new FallingDeviceManager(windowWidth, windowHeight, this, 700, context);
         whiteLineManager = new WhiteLineManager(windowWidth, windowHeight);
 
@@ -64,17 +64,17 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
             collisionManager.addObjectToWatch(device);
         }
     }
-    public void unregisterFirstDeviceFromCollisionManager() {
+    public void unregisterExpiredDevices() {
         if (collisionManager != null) {
-            collisionManager.removeFirstObject();
+            collisionManager.removeExpiredDevices();
         }
     }
-    public void processCollision(WeakReference<FallingDevice> device, WeakReference<Goose> goose) {
-        if(device.get() instanceof FallingLED)
+    public void processCollision(WeakReference<FallingDevice> device) {
+        if (device.get() instanceof FallingLED)
         {
             score += 1;
         }
-        else if(device.get() instanceof FallingResistor)
+        else if (device.get() instanceof FallingResistor)
         {
             if (life > 0) life -= 1;
         }
@@ -95,14 +95,12 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-//        boolean retry = true;
         try {
             thread.setRunning(false);
             thread.join();
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        retry = false;
     }
 
     @Override

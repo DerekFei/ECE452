@@ -11,33 +11,41 @@ public class CollisionManager {
     private WeakReference<Goose> rightGoose;
     private WeakReference<GameScene> gameScene;
     private ArrayList<WeakReference<FallingDevice>> devices;
-    public CollisionManager(Goose leftGoose, Goose rightGoose, GameScene gameScene) {
+    private int screenHeight;
+    public CollisionManager(Goose leftGoose, Goose rightGoose, GameScene gameScene, int screenHeight) {
         this.leftGoose = new WeakReference<>(leftGoose);
         this.rightGoose = new WeakReference<>(rightGoose);
         this.gameScene = new WeakReference<>(gameScene);
         this.devices = new ArrayList<>();
+        this.screenHeight = screenHeight;
     }
 
     public void addObjectToWatch(WeakReference<FallingDevice> device) {
         this.devices.add(device);
     }
-    public void removeFirstObject() { this.devices.remove(0); }
-    public void detect() {
-        if (leftGoose.get() == null || rightGoose.get() == null) return;
+
+    public void removeExpiredDevices() {
         for (WeakReference<FallingDevice> device : devices) {
             if (device.get() == null) continue;
-            if (Rect.intersects(device.get().getHitBox(), leftGoose.get().getHitBox())) {
-                collide(device, leftGoose);
-            }
-            if (Rect.intersects(device.get().getHitBox(), rightGoose.get().getHitBox())) {
-                collide(device, rightGoose);
+            if (device.get().getHitBox().top >= screenHeight) {
+                devices.remove(device);
             }
         }
     }
 
-    private void collide(WeakReference<FallingDevice> device, WeakReference<Goose> goose) {
+    public void detect() {
+        if (leftGoose.get() == null || rightGoose.get() == null) return;
+        for (WeakReference<FallingDevice> device : devices) {
+            if (device.get() == null) continue;
+            if (Rect.intersects(device.get().getHitBox(), leftGoose.get().getHitBox()) || Rect.intersects(device.get().getHitBox(), rightGoose.get().getHitBox())) {
+                collide(device);
+            }
+        }
+    }
+
+    private void collide(WeakReference<FallingDevice> device) {
         if (gameScene.get() != null) {
-            gameScene.get().processCollision(device, goose);
+            gameScene.get().processCollision(device);
         }
     }
 }
