@@ -16,11 +16,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.Bitmap;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+
+import org.jcodec.api.android.AndroidSequenceEncoder;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,9 +26,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
@@ -52,6 +51,11 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private boolean recording;
 
     private Resources r;
+
+    private File video;
+    private AndroidSequenceEncoder ase;
+    private ArrayList<Bitmap> frameList;
+    double progress;
 
     public  GameScene (Context context) {
         super(context);
@@ -78,6 +82,10 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         collisionManager = new CollisionManager(leftGoose, rightGoose, this);
         mgr = new FallingObjectManager(windowWidth, windowHeight, this, r);
         whiteLineManager = new WhiteLineManager(windowWidth, windowHeight);
+
+        video = new File(getContext().getFilesDir(), "capturedFootage");
+        frameList = new ArrayList<Bitmap>();
+        progress = 0;
 
         setFocusable(true);
     }
@@ -145,11 +153,32 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                         if(recording) {
                             recording = false;
                             //Stop recording. The video should be ready at this point
+                            try {
+                                for (int i=0; i<frameList.size();i++) {
+                                    ase.encodeImage(frameList.get(i));
+                                    progress = (double)i/(double)(frameList.size()-1);
+                                }
+                            }
+                            catch(IOException e)
+                            {
+                                e.printStackTrace();
+                            }
                         }
                         else
                         {
                             recording = true;
-                            //Start recording.
+                            progress = 0;
+                            try {
+                                if(video.exists())
+                                    video.delete();
+                                video.createNewFile();
+                                ase = AndroidSequenceEncoder.createSequenceEncoder(video, thread.getFps());
+                                frameList = new ArrayList<Bitmap>();
+                            }
+                            catch(IOException e)
+                            {
+                                e.printStackTrace();
+                            }
                         }
                     }
                     else if(Math.pow((event.getX() - windowWidth * 3 / 4), 2) + Math.pow((event.getY() - windowHeight*4/5), 2) < Math.pow(windowWidth / 12, 2))
@@ -200,7 +229,23 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                     }
                     else if(Math.pow((event.getX()-windowWidth*3/4),2)+Math.pow((event.getY()-windowHeight*4/5),2)<Math.pow(windowWidth/9,2))
                     {
-                        //Share to Facebook
+                        if(video.exists()) {
+                            postToFacebook(video.getAbsolutePath());
+//                            Uri videoFileUrl = Uri.parse("file:///" + video);
+//                            ShareVideo sv = new ShareVideo.Builder()
+//                                    .setLocalUrl(videoFileUrl)
+//                                    .build();
+//                            ShareVideoContent shareContent = new ShareVideoContent.Builder()
+//                                    .setVideo(sv)
+//                                    .build();
+//
+//                            ShareDialog shareDialog = new ShareDialog((GameActivity) getContext());
+//                            shareDialog.show(shareContent, ShareDialog.Mode.AUTOMATIC);
+                        }
+                        else
+                        {
+                            System.out.println("No video file available");
+                        }
                     }
             }
         }
@@ -224,7 +269,6 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-
         canvas.drawColor(Color.DKGRAY);
         Paint yellowLinePaint = new Paint();
         yellowLinePaint.setColor(Color.YELLOW);
@@ -260,7 +304,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
             Paint tintPaint = new Paint();
             tintPaint.setColor(Color.BLACK);
             tintPaint.setAlpha(200);
-            canvas.drawRect(0,0,windowWidth,windowHeight,tintPaint);
+            canvas.drawRect(0,0,windowWidth,(float)(windowHeight*1.2),tintPaint);
 
             Bitmap resumeBm = BitmapFactory.decodeResource(r, R.drawable.resume);
             resumeBm = Bitmap.createScaledBitmap(resumeBm, windowWidth / 4, windowWidth / 4, false);
@@ -272,6 +316,14 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
             pauseTextPaint.setTextSize(windowWidth/12);
             pauseTextPaint.setTextAlign(Paint.Align.CENTER);
             canvas.drawText("GAME PAUSED", windowWidth/2, windowHeight*2/5, pauseTextPaint);
+
+            Paint progressBarPaint = new Paint();
+            progressBarPaint.setStyle(Paint.Style.STROKE);
+            progressBarPaint.setColor(Color.WHITE);
+            canvas.drawRect(windowWidth/5, windowHeight*3/5-50, windowWidth*4/5, windowHeight*3/5+50, progressBarPaint);
+            Paint progressPaint = new Paint();
+            progressPaint.setColor(Color.GREEN);
+            canvas.drawRect(windowWidth/5, windowHeight*3/5-50, (float)(windowWidth/5*(1+3*progress)), windowHeight*3/5+50, progressPaint);
 
             Paint circlePaint = new Paint();
             circlePaint.setStyle(Paint.Style.STROKE);
@@ -306,7 +358,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
             Paint tintPaint = new Paint();
             tintPaint.setColor(Color.BLACK);
             tintPaint.setAlpha(200);
-            canvas.drawRect(0,0,windowWidth,windowHeight,tintPaint);
+            canvas.drawRect(0,0,windowWidth,(float)(windowHeight*1.2),tintPaint);
 
             Paint gameoverPaint = new Paint();
             gameoverPaint.setColor(Color.WHITE);
@@ -339,6 +391,23 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
             fbBm = Bitmap.createScaledBitmap(fbBm, windowWidth/9, windowWidth/9, false);
             canvas.drawBitmap(fbBm, windowWidth*25/36, windowHeight*4/5-windowWidth/18, bitMapPaint);
         }
+
+            if(recording && !paused && !dead)
+            {
+                Bitmap frame = Bitmap.createBitmap( (int)windowWidth, (int)windowHeight, Bitmap.Config.RGB_565 );
+                Canvas bmCanvas = new Canvas(frame);
+                super.draw(bmCanvas);
+                bmCanvas.drawColor(Color.DKGRAY);
+                bmCanvas.drawRect(leftYellowLine, yellowLinePaint);
+                bmCanvas.drawRect(rightYellowLine, yellowLinePaint);
+                whiteLineManager.draw(bmCanvas);
+                leftGoose.draw(bmCanvas);
+                rightGoose.draw(bmCanvas);
+                mgr.draw(bmCanvas);
+                bmCanvas.drawText("" + (life), 0, windowHeight/20, lifePaint);
+                bmCanvas.drawText("" + (score), windowWidth, windowHeight/20, scorePaint);
+                frameList.add(frame);
+            }
     }
 
     public void uploadScore(int score) {
@@ -398,5 +467,9 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                 Log.d("User Tag", t.getMessage());
             }
         });
+    }
+
+    public void postToFacebook(String path)
+    {
     }
 }

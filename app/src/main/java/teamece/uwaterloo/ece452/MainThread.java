@@ -73,4 +73,8 @@ public class MainThread extends Thread {
             }
         }
     }
+
+    public int getFps(){
+        return (int) Math.round(averageFPS);
+    }
 }
