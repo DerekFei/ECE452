@@ -41,7 +41,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private int windowWidth;
     private int windowHeight;
 
-    private FallingObjectManager mgr;
+    private FallingDeviceManager mgr;
     private CollisionManager collisionManager;
     private WhiteLineManager whiteLineManager;
 
@@ -75,8 +75,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
       
         leftGoose = new Goose(true, windowWidth, windowHeight, r);
         rightGoose = new Goose(false, windowWidth, windowHeight, r);
-        collisionManager = new CollisionManager(leftGoose, rightGoose, this);
-        mgr = new FallingObjectManager(windowWidth, windowHeight, this, r);
+        collisionManager = new CollisionManager(leftGoose, rightGoose, this, windowHeight);
+        mgr = new FallingDeviceManager(windowWidth, windowHeight, this, 700, context);
         whiteLineManager = new WhiteLineManager(windowWidth, windowHeight);
 
         setFocusable(true);
@@ -87,19 +87,21 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
             collisionManager.addObjectToWatch(device);
         }
     }
-
-    public void processCollision(WeakReference<FallingDevice> device, WeakReference<Goose> goose) {
-        if(device.get() instanceof FallingLED)
+    public void unregisterExpiredDevices() {
+        if (collisionManager != null) {
+            collisionManager.removeExpiredDevices();
+        }
+    }
+    public void processCollision(WeakReference<FallingDevice> device) {
+        if (device.get() instanceof FallingLED)
         {
             score += 1;
         }
-        else if(device.get() instanceof FallingResistor)
+        else if (device.get() instanceof FallingResistor)
         {
             if (life > 0) life -= 1;
         }
-
-        device.get().terminate();
-
+        if (device.get() != null) device.get().invalidate();
         if(life==0)
         {
             dead = true;
@@ -121,14 +123,12 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-//        boolean retry = true;
         try {
             thread.setRunning(false);
             thread.join();
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        retry = false;
     }
 
     @Override

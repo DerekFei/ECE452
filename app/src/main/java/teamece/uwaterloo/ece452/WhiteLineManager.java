@@ -7,12 +7,15 @@ import android.graphics.Rect;
 
 public class WhiteLineManager {
     int w,h;
+    private long startTime;
+    private long initTime;
     Rect LL[] = new Rect[4];
     Rect RL[] = new Rect[4];
 
     public WhiteLineManager(int windowWidth, int windowHeight) {
         w = windowWidth;
         h = windowHeight;
+        this.startTime = this.initTime = System.currentTimeMillis();
         for(int i=0; i<4; i++)
         {
             Rect R = new Rect(windowWidth / 4 - 5, - windowHeight / 3 + i * windowHeight / 3, windowWidth / 4 + 5, - windowHeight * 2 / 9 + i * windowHeight / 3);
@@ -26,25 +29,32 @@ public class WhiteLineManager {
     }
 
     public void update() {
+        int elapsedTime = (int) (System.currentTimeMillis() - startTime);
+        startTime = System.currentTimeMillis();
+        float speed = (float) (Math.sqrt(1 + (startTime - initTime)/4000.0)) * h / (10000.0f); // time in ms for an object to move down
+        if (speed > 1) speed = 1;
+        float modifier = speed * elapsedTime;
         for(int i=0; i<4; i++)
         {
-            LL[i].top = LL[i].top + 20;
-            LL[i].bottom = LL[i].bottom + 20;
+            LL[i].top += modifier;
+            LL[i].bottom += modifier;
+            RL[i].top += modifier;
+            RL[i].bottom += modifier;
             if(LL[i].top >= h)
             {
-                LL[i].top = - h / 3;
-                LL[i].bottom = - h * 2 / 9;
+                if(i == 3)
+                    LL[i].top = - h / 3 + LL[0].top;
+                else
+                    LL[i].top = LL[i+1].top - h / 3;
+                LL[i].bottom = LL[i].top + h / 9;
             }
-        }
-
-        for(int i=0; i<4; i++)
-        {
-            RL[i].top = RL[i].top + 20;
-            RL[i].bottom = RL[i].bottom + 20;
             if(RL[i].top >= h)
             {
-                RL[i].top = - h / 3;
-                RL[i].bottom = - h * 2 / 9;
+                if(i == 3)
+                    RL[i].top = - h / 3 + RL[0].top;
+                else
+                    RL[i].top = RL[i+1].top - h / 3;
+                RL[i].bottom = RL[i].top + h / 9;
             }
         }
     }
@@ -55,9 +65,6 @@ public class WhiteLineManager {
         for(int i=0; i<4; i++)
         {
             canvas.drawRect(LL[i], barPaint);
-        }
-        for(int i=0; i<4; i++)
-        {
             canvas.drawRect(RL[i], barPaint);
         }
     }
