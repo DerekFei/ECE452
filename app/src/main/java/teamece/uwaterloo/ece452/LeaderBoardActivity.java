@@ -3,6 +3,7 @@ package teamece.uwaterloo.ece452;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,7 +50,9 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        String userId = "2";
+        String userId = PreferenceManager.getDefaultSharedPreferences(this).getString("userId", "defaultStringIfNothingFound");
+        userId = "\"" + userId + "\"";
+
         UserApi userApi = retrofit.create(UserApi.class);
         Call<User> userCall = userApi.getUser(userId);
         userCall.enqueue(new Callback<User>() {
@@ -60,21 +63,32 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 }
 
                 User currentUser = response.body();
-                List<String> myNameList = new ArrayList<String>();
                 List<Integer> myScoreList = new ArrayList<Integer>();
+                if (currentUser != null) {
+                    myScoreList.add(currentUser.getScore());
+                    ArrayAdapter<Integer> myScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, myScoreList) {
+                        @Override
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            TextView textView=(TextView) super.getView(position, convertView, parent);
+                            textView.setTextColor(Color.WHITE);
 
-                myScoreList.add(currentUser.getScore());
-                ArrayAdapter<Integer> myScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, myScoreList) {
-                    @Override
-                    public View getView(int position, View convertView, ViewGroup parent) {
-                        TextView textView=(TextView) super.getView(position, convertView, parent);
-                        textView.setTextColor(Color.WHITE);
+                            return textView;
+                        }
+                    };
+                    myScore.setAdapter(myScoreArrayAdapter);
+                } else {
+                    myScoreList.add(0);
+                    ArrayAdapter<Integer> myScoreArrayAdapter = new ArrayAdapter <Integer>(LeaderBoardActivity.this, android.R.layout.simple_list_item_1, myScoreList) {
+                        @Override
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            TextView textView=(TextView) super.getView(position, convertView, parent);
+                            textView.setTextColor(Color.WHITE);
 
-                        return textView;
-                    }
-                };
-                myScore.setAdapter(myScoreArrayAdapter);
-
+                            return textView;
+                        }
+                    };
+                    myScore.setAdapter(myScoreArrayAdapter);
+                }
             }
 
             @Override
@@ -110,7 +124,9 @@ public class LeaderBoardActivity extends AppCompatActivity {
                 List<Integer> userScoreList = new ArrayList<Integer>();
                 List<LeaderBoard> userRecords = response.body();
                 for (LeaderBoard userRecord: userRecords) {
-                    userNameList.add(userRecord.getName());
+                    String tempName = userRecord.getName();
+                    tempName = tempName.replace("\"", "");
+                    userNameList.add(tempName);
                     userScoreList.add(userRecord.getScore());
                 }
 
