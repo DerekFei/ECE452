@@ -24,8 +24,8 @@ public class Goose implements GameObject {
         this.r=r;
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
-        width = 250;
-        height = 250;
+        width = windowWidth/5;
+        height = windowWidth/5;
         hitBox = new Rect(((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) - width / 2), windowHeight - height,
                 ((left ? windowWidth / 4 : windowWidth * 3 / 4) + (leftLane ? - windowWidth / 8 : windowWidth / 8) + width / 2), windowHeight);
     }

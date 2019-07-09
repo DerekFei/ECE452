@@ -8,10 +8,8 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 public class FallingResistor extends FallingDevice implements GameObject {
-    Bitmap b;
-
-    public FallingResistor(Rect rect, int resID, Context context){
-        super(rect, BitmapFactory.decodeResource(context.getResources(), resID));
+    public FallingResistor(Rect rect, Bitmap bitmap){
+        super(rect, bitmap);
     }
 
     @Override

@@ -21,6 +21,11 @@ public class FallingDeviceManager {
     private ArrayList<FallingDevice> devices;
     private Context context;
     WeakReference<GameScene> gameScene;
+    private int countdown = 0;
+    private int leftOffset = 0;
+    private int rightOffset = 0;
+    private boolean leftLeftLane;
+    private boolean rightLeftLane;
 
     public FallingDeviceManager(int screenWidth, int screenHeight, GameScene gameScene, int initialSpawnInterval, Context context) {
         this.screenWidth = screenWidth;
@@ -46,14 +51,45 @@ public class FallingDeviceManager {
                 this.gameScene.get().unregisterExpiredDevices();
             }
         }
-    }
-
-    private void spawnNewObject() {
-        spawnNewObject(50, -250, 300, 0);
+        countdown -=elapsedTime;
+        leftOffset -= elapsedTime;
+        rightOffset -= elapsedTime;
+        if(countdown <= 0)
+        {
+            countdown = spawnInterval;
+            leftLeftLane = ((int) Math.floor(Math.random()*2) == 0);
+            rightLeftLane = ((int) Math.floor(Math.random()*2) == 0);
+            leftOffset = (int)Math.floor(Math.random()*4000);
+            rightOffset = (int)Math.floor(Math.random()*4000);
+        }
+        if(leftOffset <= 0)
+        {
+            leftOffset = 999999999;
+            if(leftLeftLane)
+            {
+                spawnNewObject(screenWidth / 40, - screenWidth / 5, screenWidth * 9 / 40, 0);
+            }
+            else
+            {
+                spawnNewObject(screenWidth * 11 / 40, - screenWidth / 5, screenWidth * 19 / 40, 0);
+            }
+        }
+        if(rightOffset <= 0)
+        {
+            rightOffset = 999999999;
+            if(rightLeftLane)
+            {
+                spawnNewObject(screenWidth * 21 / 40, - screenWidth / 5, screenWidth * 29 / 40, 0);
+            }
+            else
+            {
+                spawnNewObject(screenWidth * 31 / 40, - screenWidth / 5, screenWidth * 39 / 40, 0);
+            }
+        }
     }
 
     private void spawnNewObject(int l, int t, int r, int b) {
-        FallingDevice device = new FallingLED(new Rect(l, t, r,  b), BitmapFactory.decodeResource(context.getResources(), R.drawable.led_red));
+        FallingDevice device = new FallingResistor(new Rect(l, t, r, b), BitmapFactory.decodeResource(context.getResources(), R.drawable.resistor));
         devices.add(device);
         if (this.gameScene.get() != null) {
             this.gameScene.get().registerCollisionManager(new WeakReference<>(device));

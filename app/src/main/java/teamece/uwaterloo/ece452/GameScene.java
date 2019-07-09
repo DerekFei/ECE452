@@ -76,7 +76,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         leftGoose = new Goose(true, windowWidth, windowHeight, r);
         rightGoose = new Goose(false, windowWidth, windowHeight, r);
         collisionManager = new CollisionManager(leftGoose, rightGoose, this, windowHeight);
-        mgr = new FallingDeviceManager(windowWidth, windowHeight, this, 700, context);
+        mgr = new FallingDeviceManager(windowWidth, windowHeight, this, 8000, context);
         whiteLineManager = new WhiteLineManager(windowWidth, windowHeight);
 
         setFocusable(true);
@@ -184,8 +184,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
                         leftGoose = new Goose(true, windowWidth, windowHeight, r);
                         rightGoose = new Goose(false, windowWidth, windowHeight, r);
-                        collisionManager = new CollisionManager(leftGoose, rightGoose, this);
-                        mgr = new FallingObjectManager(windowWidth, windowHeight, this, r);
+                        collisionManager = new CollisionManager(leftGoose, rightGoose, this, windowHeight);
+                        mgr = new FallingDeviceManager(windowWidth, windowHeight, this,700, getContext());
                         whiteLineManager = new WhiteLineManager(windowWidth, windowHeight);
                     }
                     else if(Math.pow((event.getX()-windowWidth/4),2)+Math.pow((event.getY()-windowHeight*4/5),2)<Math.pow(windowWidth/9,2))
