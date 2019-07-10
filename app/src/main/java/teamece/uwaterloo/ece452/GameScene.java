@@ -101,6 +101,10 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         {
             if (life > 0) life -= 1;
         }
+        else if (device.get() instanceof FallingCapacitor)
+        {
+            if (life <= 10) life += 1;
+        }
         if (device.get() != null) device.get().invalidate();
         if(life==0)
         {

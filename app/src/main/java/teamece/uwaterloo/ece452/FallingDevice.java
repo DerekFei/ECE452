@@ -54,6 +54,7 @@ public abstract class FallingDevice implements GameObject {
     {
         return this.hitBox.equals(d.hitBox) &&
                 ((this instanceof FallingLED && d instanceof FallingLED) ||
-                (this instanceof FallingResistor && d instanceof FallingResistor));
+                (this instanceof FallingResistor && d instanceof FallingResistor) ||
+                (this instanceof FallingCapacitor && d instanceof FallingCapacitor));
     }
 }

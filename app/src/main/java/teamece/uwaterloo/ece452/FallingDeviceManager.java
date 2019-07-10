@@ -31,6 +31,9 @@ public class FallingDeviceManager {
     private int ledSpawnInterval;
     private int ledCounter;
 
+    private int capacitorSpawnInterval;
+    private int capacitorCounter;
+
     public FallingDeviceManager(int screenWidth, int screenHeight, GameScene gameScene, int initialSpawnInterval, Context context) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
@@ -41,6 +44,8 @@ public class FallingDeviceManager {
         this.context = context;
         this.ledSpawnInterval = 3000;
         this.ledCounter = ledSpawnInterval+(int)(Math.random()*ledSpawnInterval/4 - ledSpawnInterval/8);
+        this.capacitorSpawnInterval = 10000;
+        this.capacitorCounter = capacitorSpawnInterval+(int)(Math.random()*capacitorSpawnInterval/4 - capacitorSpawnInterval/8);
     }
 
     public void update(){
@@ -104,6 +109,26 @@ public class FallingDeviceManager {
             boolean leftLane = Math.floor(Math.random()*2) == 0;
             spawnNewLED(((left ? screenWidth / 4 : screenWidth * 3 / 4) + (leftLane ? - screenWidth / 8 : screenWidth / 8) - screenWidth / 10), - screenWidth / 5,
                     ((left ? screenWidth / 4 : screenWidth * 3 / 4) + (leftLane ? - screenWidth / 8 : screenWidth / 8) + screenWidth / 10), 0);
+        }
+
+        //Block for capacitor spawning
+        capacitorCounter -= elapsedTime;
+        if(capacitorCounter <= 0)
+        {
+            capacitorCounter = (int)(capacitorSpawnInterval / speed)+(int)(Math.random()*capacitorSpawnInterval/4 - capacitorSpawnInterval/8);
+            boolean left = Math.floor(Math.random()*2) == 0;
+            boolean leftLane = Math.floor(Math.random()*2) == 0;
+            spawnNewCapacitor(((left ? screenWidth / 4 : screenWidth * 3 / 4) + (leftLane ? - screenWidth / 8 : screenWidth / 8) - screenWidth / 10), - screenWidth / 5,
+                    ((left ? screenWidth / 4 : screenWidth * 3 / 4) + (leftLane ? - screenWidth / 8 : screenWidth / 8) + screenWidth / 10), 0);
+        }
+    }
+
+    private void spawnNewCapacitor(int l, int t, int r, int b) {
+        int color = (int) Math.floor(Math.random()*3);
+        FallingDevice device = new FallingCapacitor(new Rect(l, t, r, b), BitmapFactory.decodeResource(context.getResources(), R.drawable.capacitor));
+        devices.add(device);
+        if (this.gameScene.get() != null) {
+            this.gameScene.get().registerCollisionManager(new WeakReference<>(device));
         }
     }
 
