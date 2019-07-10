@@ -25,10 +25,12 @@ public class CollisionManager {
     }
 
     public void removeExpiredDevices() {
-        for (WeakReference<FallingDevice> device : devices) {
+        for (int i=0; i<devices.size(); i++) {
+            WeakReference<FallingDevice> device = devices.get(i);
             if (device.get() == null) continue;
             if (device.get().getHitBox().top >= screenHeight) {
                 devices.remove(device);
+                i--;
             }
         }
     }

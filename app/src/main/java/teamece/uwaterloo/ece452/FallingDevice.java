@@ -49,4 +49,11 @@ public abstract class FallingDevice implements GameObject {
         hitBox.set(0, 4999, 0, 4999);
         bitmap = null;
     }
+
+    public boolean equals(FallingDevice d)
+    {
+        return this.hitBox.equals(d.hitBox) &&
+                ((this instanceof FallingLED && d instanceof FallingLED) ||
+                (this instanceof FallingResistor && d instanceof FallingResistor));
+    }
 }
