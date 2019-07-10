@@ -76,7 +76,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         leftGoose = new Goose(true, windowWidth, windowHeight, r);
         rightGoose = new Goose(false, windowWidth, windowHeight, r);
         collisionManager = new CollisionManager(leftGoose, rightGoose, this, windowHeight);
-        mgr = new FallingDeviceManager(windowWidth, windowHeight, this, 8000, context);
+        mgr = new FallingDeviceManager(windowWidth, windowHeight, this, 1000, context);
         whiteLineManager = new WhiteLineManager(windowWidth, windowHeight);
 
         setFocusable(true);
@@ -100,6 +100,10 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         else if (device.get() instanceof FallingResistor)
         {
             if (life > 0) life -= 1;
+        }
+        else if (device.get() instanceof FallingCapacitor)
+        {
+            if (life <= 10) life += 1;
         }
         if (device.get() != null) device.get().invalidate();
         if(life==0)
@@ -139,8 +143,10 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                 case MotionEvent.ACTION_DOWN:
                     if (Math.pow((event.getX() - windowWidth / 2), 2) + Math.pow((event.getY() - windowHeight / 10), 2) < Math.pow(windowWidth / 8, 2)) {
                         paused = false;
+                        mgr.unpause();
+                        whiteLineManager.unpause();
                     }
-                    else if(Math.pow((event.getX() - windowWidth / 4), 2) + Math.pow((event.getY() - windowHeight*4/5), 2) < Math.pow(windowWidth / 12, 2))
+                    else if(Math.pow((event.getX()-windowWidth/4),2)+Math.pow((event.getY()-windowHeight*4/5),2)<Math.pow(windowWidth/9,2))
                     {
                         if(recording) {
                             recording = false;
@@ -152,10 +158,14 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                             //Start recording.
                         }
                     }
-                    else if(Math.pow((event.getX() - windowWidth * 3 / 4), 2) + Math.pow((event.getY() - windowHeight*4/5), 2) < Math.pow(windowWidth / 12, 2))
+                    else if(Math.pow((event.getX()-windowWidth/2),2)+Math.pow((event.getY()-windowHeight*4/5),2)<Math.pow(windowWidth/9,2))
                     {
                         Intent homeActivity = new Intent(getContext(), HomeScreenActivity.class);
                         getContext().startActivity(homeActivity);
+                    }
+                    else if(Math.pow((event.getX()-windowWidth*3/4),2)+Math.pow((event.getY()-windowHeight*4/5),2)<Math.pow(windowWidth/9,2))
+                    {
+                        //Share to Facebook
                     }
             }
         }
@@ -185,7 +195,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                         leftGoose = new Goose(true, windowWidth, windowHeight, r);
                         rightGoose = new Goose(false, windowWidth, windowHeight, r);
                         collisionManager = new CollisionManager(leftGoose, rightGoose, this, windowHeight);
-                        mgr = new FallingDeviceManager(windowWidth, windowHeight, this,700, getContext());
+                        mgr = new FallingDeviceManager(windowWidth, windowHeight, this,1000, getContext());
                         whiteLineManager = new WhiteLineManager(windowWidth, windowHeight);
                     }
                     else if(Math.pow((event.getX()-windowWidth/4),2)+Math.pow((event.getY()-windowHeight*4/5),2)<Math.pow(windowWidth/9,2))
@@ -228,8 +238,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawColor(Color.DKGRAY);
         Paint yellowLinePaint = new Paint();
         yellowLinePaint.setColor(Color.YELLOW);
-        Rect leftYellowLine = new Rect(windowWidth / 2 - 15, 0, windowWidth / 2 - 5, windowHeight);
-        Rect rightYellowLine = new Rect(windowWidth / 2 + 5, 0, windowWidth / 2 + 15, windowHeight);
+        Rect leftYellowLine = new Rect(windowWidth / 2 - 15, 0, windowWidth / 2 - 5, (int) (windowHeight*1.1));
+        Rect rightYellowLine = new Rect(windowWidth / 2 + 5, 0, windowWidth / 2 + 15, (int) (windowHeight*1.1));
         canvas.drawRect(leftYellowLine, yellowLinePaint);
         canvas.drawRect(rightYellowLine, yellowLinePaint);
 
@@ -260,7 +270,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
             Paint tintPaint = new Paint();
             tintPaint.setColor(Color.BLACK);
             tintPaint.setAlpha(200);
-            canvas.drawRect(0,0,windowWidth,windowHeight,tintPaint);
+            canvas.drawRect(0,0,windowWidth,(float)(windowHeight*1.1),tintPaint);
 
             Bitmap resumeBm = BitmapFactory.decodeResource(r, R.drawable.resume);
             resumeBm = Bitmap.createScaledBitmap(resumeBm, windowWidth / 4, windowWidth / 4, false);
@@ -276,25 +286,29 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
             Paint circlePaint = new Paint();
             circlePaint.setStyle(Paint.Style.STROKE);
             circlePaint.setColor(Color.WHITE);
-            canvas.drawCircle(windowWidth/4, windowHeight*4/5, windowWidth/6, circlePaint);
-            canvas.drawCircle(windowWidth*3/4, windowHeight*4/5, windowWidth/6, circlePaint);
+            canvas.drawCircle(windowWidth/4, windowHeight*4/5, windowWidth/9, circlePaint);
+            canvas.drawCircle(windowWidth/2, windowHeight*4/5, windowWidth/9, circlePaint);
+            canvas.drawCircle(windowWidth*3/4, windowHeight*4/5, windowWidth/9, circlePaint);
 
             Paint bitMapPaint = new Paint();
             bitMapPaint.setColor(Color.WHITE);
             if(recording)
             {
                 Bitmap stopBm = BitmapFactory.decodeResource(r, R.drawable.stop_record);
-                stopBm = Bitmap.createScaledBitmap(stopBm, windowWidth/6, windowWidth/6, false);
-                canvas.drawBitmap(stopBm, windowWidth / 6, windowHeight * 4 / 5 - windowWidth / 12, bitMapPaint);
+                stopBm = Bitmap.createScaledBitmap(stopBm, windowWidth/9, windowWidth/9, false);
+                canvas.drawBitmap(stopBm, windowWidth*7/36, windowHeight*4/5-windowWidth/18, bitMapPaint);
             }
             else {
                 Bitmap recordBm = BitmapFactory.decodeResource(r, R.drawable.record);
-                recordBm = Bitmap.createScaledBitmap(recordBm, windowWidth / 6, windowWidth / 6, false);
-                canvas.drawBitmap(recordBm, windowWidth / 6, windowHeight * 4 / 5 - windowWidth / 12, bitMapPaint);
+                recordBm = Bitmap.createScaledBitmap(recordBm, windowWidth / 9, windowWidth / 9, false);
+                canvas.drawBitmap(recordBm, windowWidth*7/36, windowHeight*4/5-windowWidth/18, bitMapPaint);
             }
             Bitmap homeBm = BitmapFactory.decodeResource(r, R.drawable.gameover_home);
-            homeBm = Bitmap.createScaledBitmap(homeBm, windowWidth/6, windowWidth/6, false);
-            canvas.drawBitmap(homeBm, windowWidth*2/3, windowHeight*4/5-windowWidth/12, bitMapPaint);
+            homeBm = Bitmap.createScaledBitmap(homeBm, windowWidth/9, windowWidth/9, false);
+            canvas.drawBitmap(homeBm, windowWidth*4/9, windowHeight*4/5-windowWidth/18, bitMapPaint);
+            Bitmap fbBm = BitmapFactory.decodeResource(r, R.drawable.gameover_facebook);
+            fbBm = Bitmap.createScaledBitmap(fbBm, windowWidth/9, windowWidth/9, false);
+            canvas.drawBitmap(fbBm, windowWidth*25/36, windowHeight*4/5-windowWidth/18, bitMapPaint);
         }
         else if (!paused && !dead){
             Bitmap pauseBm = BitmapFactory.decodeResource(r, R.drawable.pause);
@@ -306,7 +320,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
             Paint tintPaint = new Paint();
             tintPaint.setColor(Color.BLACK);
             tintPaint.setAlpha(200);
-            canvas.drawRect(0,0,windowWidth,windowHeight,tintPaint);
+            canvas.drawRect(0,0,windowWidth,(float)(windowHeight*1.1),tintPaint);
 
             Paint gameoverPaint = new Paint();
             gameoverPaint.setColor(Color.WHITE);

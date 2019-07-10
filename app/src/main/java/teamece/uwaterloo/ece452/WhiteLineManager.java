@@ -68,4 +68,8 @@ public class WhiteLineManager {
             canvas.drawRect(RL[i], barPaint);
         }
     }
+
+    public void unpause() {
+        startTime = System.currentTimeMillis();
+    }
 }
