@@ -1,5 +1,6 @@
 package teamece.uwaterloo.ece452;
 
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
 import java.lang.ref.WeakReference;
@@ -37,7 +38,8 @@ public class CollisionManager {
 
     public void detect() {
         if (leftGoose.get() == null || rightGoose.get() == null) return;
-        for (WeakReference<FallingDevice> device : devices) {
+        for (int i=0; i<devices.size(); i++) {
+            WeakReference<FallingDevice> device = devices.get(i);
             if (device.get() == null) continue;
             if (Rect.intersects(device.get().getHitBox(), leftGoose.get().getHitBox()) || Rect.intersects(device.get().getHitBox(), rightGoose.get().getHitBox())) {
                 collide(device);

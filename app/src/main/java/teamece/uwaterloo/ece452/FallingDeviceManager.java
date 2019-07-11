@@ -34,6 +34,9 @@ public class FallingDeviceManager {
     private int capacitorSpawnInterval;
     private int capacitorCounter;
 
+    private int inductorSpawnInterval;
+    private int inductorCounter;
+
     public FallingDeviceManager(int screenWidth, int screenHeight, GameScene gameScene, int initialSpawnInterval, Context context) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
@@ -42,10 +45,12 @@ public class FallingDeviceManager {
         this.spawnInterval = initialSpawnInterval;
         this.devices = new ArrayList<>();
         this.context = context;
-        this.ledSpawnInterval = 3000;
+        this.ledSpawnInterval = 2000;
         this.ledCounter = ledSpawnInterval+(int)(Math.random()*ledSpawnInterval/4 - ledSpawnInterval/8);
-        this.capacitorSpawnInterval = 10000;
+        this.capacitorSpawnInterval = 7000;
         this.capacitorCounter = capacitorSpawnInterval+(int)(Math.random()*capacitorSpawnInterval/4 - capacitorSpawnInterval/8);
+        this.inductorSpawnInterval = 10000;
+        this.inductorCounter = inductorSpawnInterval+(int)(Math.random()*inductorSpawnInterval/4 - inductorSpawnInterval/8);
     }
 
     public void update(){
@@ -121,6 +126,17 @@ public class FallingDeviceManager {
             spawnNewCapacitor(((left ? screenWidth / 4 : screenWidth * 3 / 4) + (leftLane ? - screenWidth / 8 : screenWidth / 8) - screenWidth / 10), - screenWidth / 5,
                     ((left ? screenWidth / 4 : screenWidth * 3 / 4) + (leftLane ? - screenWidth / 8 : screenWidth / 8) + screenWidth / 10), 0);
         }
+
+        //Block for inductor spawning
+        inductorCounter -= elapsedTime;
+        if(inductorCounter <= 0)
+        {
+            inductorCounter = (int)(inductorSpawnInterval / speed)+(int)(Math.random()*inductorSpawnInterval/4 - inductorSpawnInterval/8);
+            boolean left = Math.floor(Math.random()*2) == 0;
+            boolean leftLane = Math.floor(Math.random()*2) == 0;
+            spawnNewInductor(((left ? screenWidth / 4 : screenWidth * 3 / 4) + (leftLane ? - screenWidth / 8 : screenWidth / 8) - screenWidth / 10), - screenWidth / 5,
+                    ((left ? screenWidth / 4 : screenWidth * 3 / 4) + (leftLane ? - screenWidth / 8 : screenWidth / 8) + screenWidth / 10), 0);
+        }
     }
 
     private void spawnNewCapacitor(int l, int t, int r, int b) {
@@ -147,6 +163,35 @@ public class FallingDeviceManager {
         devices.add(device);
         if (this.gameScene.get() != null) {
             this.gameScene.get().registerCollisionManager(new WeakReference<>(device));
+        }
+    }
+
+    private void spawnNewInductor(int l, int t, int r, int b) {
+        FallingDevice device = new FallingInductor(new Rect(l, t, r, b), BitmapFactory.decodeResource(context.getResources(), R.drawable.inductor));
+        devices.add(device);
+        if (this.gameScene.get() != null) {
+            this.gameScene.get().registerCollisionManager(new WeakReference<>(device));
+        }
+    }
+
+    public void substitudeDevices()
+    {
+        for (int i=0; i<devices.size(); i++) {
+            FallingDevice device = devices.get(i);
+            if (!(device instanceof FallingResistor)) continue;
+            int color = (int) Math.floor(Math.random()*3);
+            int l = device.getHitBox().left;
+            int t = device.getHitBox().top;
+            int r = device.getHitBox().right;
+            int b = device.getHitBox().bottom;
+            devices.remove(device);
+            device.invalidate();
+            i--;
+            FallingDevice d = new FallingLED(new Rect(l,t,r,b), BitmapFactory.decodeResource(gameScene.get().getResources(),
+                    color == 0 ? R.drawable.led_green : (color == 1 ? R.drawable.led_red : R.drawable.led_yellow)));
+            devices.add(d);
+            if (this.gameScene.get() != null)
+                this.gameScene.get().registerCollisionManager(new WeakReference<>(d));
         }
     }
 
