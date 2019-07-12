@@ -1,11 +1,8 @@
 package teamece.uwaterloo.ece452;
 
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +19,6 @@ import android.view.WindowManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -41,11 +37,7 @@ public class GameActivity extends AppCompatActivity {
     private VirtualDisplay virtualDisplay;
     private GameScene gameScene;
     private MediaProjectionCallback callback;
-
-
     private static final int REQUEST_PERMISSIONS = 1000;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +57,10 @@ public class GameActivity extends AppCompatActivity {
         screenDensity = displayMetrics.densityDpi;
         screenHeight = size.y;
         screenWidth = size.x;
-//        String[] Permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-//        ActivityCompat.requestPermissions(this, Permissions, 0);
 
-
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) + ContextCompat
-                .checkSelfPermission(this,
-                        Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale
-                    (this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale
-                            (this, Manifest.permission.RECORD_AUDIO)) {
+                    (this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 Snackbar.make(findViewById(android.R.id.content), "permissions",
                         Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
                         new View.OnClickListener() {
@@ -86,14 +68,14 @@ public class GameActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 ActivityCompat.requestPermissions(GameActivity.this,
                                         new String[]{Manifest.permission
-                                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                                                .WRITE_EXTERNAL_STORAGE},
                                         REQUEST_PERMISSIONS);
                             }
                         }).show();
             } else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission
-                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                                .WRITE_EXTERNAL_STORAGE},
                         REQUEST_PERMISSIONS);
             }
         }
@@ -107,16 +89,11 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode != PERMISSION_CODE) {
-            Toast.makeText(this,
-                    "Unknown permission code", Toast.LENGTH_SHORT).show();
             return;
         }
         if (resultCode != RESULT_OK) {
-            Toast.makeText(this,
-                    "User denied screen sharing permission", Toast.LENGTH_SHORT).show();
             return;
         }
-        Toast.makeText(this, "okok", Toast.LENGTH_SHORT).show();
         mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data);
         callback = new MediaProjectionCallback();
         mediaProjection.registerCallback(callback, null);
