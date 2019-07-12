@@ -158,6 +158,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                     }
                     else if(Math.pow((event.getX()-windowWidth/2),2)+Math.pow((event.getY()-windowHeight*4/5),2)<Math.pow(windowWidth/9,2))
                     {
+                        recording = false;
+                        ((GameActivity) getContext()).stopRecordScreen();
                         Intent homeActivity = new Intent(getContext(), HomeScreenActivity.class);
                         getContext().startActivity(homeActivity);
                     }
