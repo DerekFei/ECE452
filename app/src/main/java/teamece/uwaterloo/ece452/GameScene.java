@@ -49,7 +49,6 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
     public  GameScene (Context context) {
         super(context);
-
         getHolder().addCallback(this);
 
         thread = new MainThread(getHolder(), this);
@@ -60,7 +59,6 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         windowWidth = size.x;
         windowHeight = size.y;
         r = getResources();
-
         score = 0;
         life = 10;
         dead = false;
@@ -97,6 +95,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         if(life==0)
         {
             dead = true;
+            recording = false;
+            ((GameActivity) getContext()).stopRecordScreen();
             checkUpload();
         }
     }
@@ -136,12 +136,14 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                     {
                         if(recording) {
                             recording = false;
+                            ((GameActivity) getContext()).stopRecordScreen();
                             //Stop recording. The video should be ready at this point
                         }
                         else
                         {
                             recording = true;
                             //Start recording.
+                            ((GameActivity) getContext()).recordScreen();
                         }
                     }
                     else if(Math.pow((event.getX() - windowWidth * 3 / 4), 2) + Math.pow((event.getY() - windowHeight*4/5), 2) < Math.pow(windowWidth / 12, 2))

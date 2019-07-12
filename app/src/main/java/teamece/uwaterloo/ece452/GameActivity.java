@@ -4,22 +4,27 @@ package teamece.uwaterloo.ece452;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 
@@ -36,6 +41,9 @@ public class GameActivity extends AppCompatActivity {
     private VirtualDisplay virtualDisplay;
     private GameScene gameScene;
     private MediaProjectionCallback callback;
+
+
+    private static final int REQUEST_PERMISSIONS = 1000;
 
 
 
@@ -57,9 +65,38 @@ public class GameActivity extends AppCompatActivity {
         screenDensity = displayMetrics.densityDpi;
         screenHeight = size.y;
         screenWidth = size.x;
-        String[] Permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        ActivityCompat.requestPermissions(this, Permissions, 0);
-        recordScreen();
+//        String[] Permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+//        ActivityCompat.requestPermissions(this, Permissions, 0);
+
+
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) + ContextCompat
+                .checkSelfPermission(this,
+                        Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale
+                    (this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale
+                            (this, Manifest.permission.RECORD_AUDIO)) {
+                Snackbar.make(findViewById(android.R.id.content), "permissions",
+                        Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ActivityCompat.requestPermissions(GameActivity.this,
+                                        new String[]{Manifest.permission
+                                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                                        REQUEST_PERMISSIONS);
+                            }
+                        }).show();
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission
+                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                        REQUEST_PERMISSIONS);
+            }
+        }
     }
 
     @Override
@@ -87,7 +124,8 @@ public class GameActivity extends AppCompatActivity {
         mediaRecorder.start();
     }
 
-    private void recordScreen() {
+    public void recordScreen() {
+        isRecording = true;
         try {
             mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -101,7 +139,6 @@ public class GameActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        isRecording = true;
         if (gameScene.getHolder().getSurface() == null) {
             return;
         }
@@ -111,8 +148,13 @@ public class GameActivity extends AppCompatActivity {
             return;
         }
     }
-    private void stopRecordScreen() {
-        isRecording = false;
+    public void stopRecordScreen() {
+        if (isRecording) {
+            mediaRecorder.stop();
+            mediaRecorder.reset();
+            isRecording = false;
+        }
+
         if (virtualDisplay != null) {
             virtualDisplay.release();
             virtualDisplay = null;
@@ -132,14 +174,7 @@ public class GameActivity extends AppCompatActivity {
     private class MediaProjectionCallback extends MediaProjection.Callback {
         @Override
         public void onStop() {
-            mediaRecorder.stop();
-            mediaRecorder.reset();
             stopRecordScreen();
         }
     }
-
-//    @Override
-//    public void onRequestPermissionResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-//
-//    }
 }
