@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.VideoView;
 
+
 public class HomeScreenActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,9 +34,9 @@ public class HomeScreenActivity extends AppCompatActivity {
                 mp.setLooping(true);
             }
         });
-
-
     }
+
+
 
     @Override
     protected void onRestart() {
@@ -50,6 +53,8 @@ public class HomeScreenActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     public void startNewGame(View v) {
         Intent newGameActivity = new Intent(this, GameActivity.class);

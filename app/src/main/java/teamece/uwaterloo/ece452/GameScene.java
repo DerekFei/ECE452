@@ -16,11 +16,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.Bitmap;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,8 +26,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
@@ -50,16 +45,13 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private boolean dead;
     private boolean paused;
     private boolean recording;
-
     private Resources r;
 
     public  GameScene (Context context) {
         super(context);
-
         getHolder().addCallback(this);
 
         thread = new MainThread(getHolder(), this);
-
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
@@ -67,7 +59,6 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         windowWidth = size.x;
         windowHeight = size.y;
         r = getResources();
-
         score = 0;
         life = 10;
         dead = false;
@@ -78,7 +69,6 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         collisionManager = new CollisionManager(leftGoose, rightGoose, this, windowHeight);
         mgr = new FallingDeviceManager(windowWidth, windowHeight, this, 1000, context);
         whiteLineManager = new WhiteLineManager(windowWidth, windowHeight);
-
         setFocusable(true);
     }
 
@@ -113,6 +103,8 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         if(life==0)
         {
             dead = true;
+            recording = false;
+            ((GameActivity) getContext()).stopRecordScreen();
             checkUpload();
         }
     }
@@ -154,12 +146,14 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                     {
                         if(recording) {
                             recording = false;
+                            ((GameActivity) getContext()).stopRecordScreen();
                             //Stop recording. The video should be ready at this point
                         }
                         else
                         {
                             recording = true;
                             //Start recording.
+                            ((GameActivity) getContext()).recordScreen();
                         }
                     }
                     else if(Math.pow((event.getX()-windowWidth/2),2)+Math.pow((event.getY()-windowHeight*4/5),2)<Math.pow(windowWidth/9,2))
