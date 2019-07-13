@@ -67,6 +67,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     public void helpOnClick(View v) {
-        System.out.println("Help clicked");
+        Intent helpActivity = new Intent(this, HelpActivity.class);
+        startActivity(helpActivity);
     }
 }
