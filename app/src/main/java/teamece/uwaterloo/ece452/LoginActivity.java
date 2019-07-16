@@ -96,16 +96,18 @@ public class LoginActivity extends AppCompatActivity {
 
     public void loginBtnOnClick(View v) {
 // Choose authentication providers
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.FacebookBuilder().build());
-
-// Create and launch sign-in intent
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
-                RC_SIGN_IN);
+        Intent homeScreenActivity = new Intent(this, HomeScreenActivity.class);
+        startActivity(homeScreenActivity);
+//        List<AuthUI.IdpConfig> providers = Arrays.asList(
+//                new AuthUI.IdpConfig.FacebookBuilder().build());
+//
+//// Create and launch sign-in intent
+//        startActivityForResult(
+//                AuthUI.getInstance()
+//                        .createSignInIntentBuilder()
+//                        .setAvailableProviders(providers)
+//                        .build(),
+//                RC_SIGN_IN);
 
     }
 }

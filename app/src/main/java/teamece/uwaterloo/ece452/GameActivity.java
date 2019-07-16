@@ -22,7 +22,11 @@ import android.hardware.display.VirtualDisplay;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.share.DeviceShareDialog;
+import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
@@ -46,14 +50,35 @@ public class GameActivity extends AppCompatActivity {
     private VirtualDisplay virtualDisplay;
     private GameScene gameScene;
     private MediaProjectionCallback callback;
-    private DeviceShareDialog shareDialog;
     private static final int REQUEST_PERMISSIONS = 1000;
+    CallbackManager facebookCallbackMgr;
+
+    private FacebookCallback<Sharer.Result> fbcallback = new FacebookCallback<Sharer.Result>() {
+        @Override
+        public void onSuccess(Sharer.Result result) {
+            Log.v("s", "Successfully posted");
+            // Write some code to do some operations when you shared content successfully.
+        }
+
+        @Override
+        public void onCancel() {
+            Log.v("s", "Sharing cancelled");
+            // Write some code to do some operations when you cancel sharing content.
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+            Log.v("s", "wtf cancelled");
+            Log.v("s", error.getMessage());
+            // Write some code to do some operations when some error occurs while sharing content.
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        shareDialog = new DeviceShareDialog(this);
+        facebookCallbackMgr = CallbackManager.Factory.create();
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
@@ -99,6 +124,7 @@ public class GameActivity extends AppCompatActivity {
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        facebookCallbackMgr.onActivityResult(requestCode, resultCode, data);
         if (requestCode != PERMISSION_CODE) {
             return;
         }
@@ -115,27 +141,14 @@ public class GameActivity extends AppCompatActivity {
     public void shareOnFb(){
         File externalFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/GeECE.mp4");
         Uri videoFileUri = Uri.fromFile(externalFile);
-        Log.i("aa", "**********");
-
         ShareVideo video = new ShareVideo.Builder()
                 .setLocalUrl(videoFileUri)
                 .build();
-//        ShareVideoContent content = new ShareVideoContent.Builder()
-//                .setVideo(video)
-//                .setContentDescription("Feeling board? Join me and play Geece")
-//                .build();
-        ShareLinkContent content = new ShareLinkContent.Builder()
-                // Setting the title that will be shared
-                .setContentTitle("Planning a trip to Dubai?")
-                // Setting the description that will be shared
-                .setContentDescription("Make sure you visit unique attractions recommended by the local people!")
-                // Setting the URL that will be shared
-                .setContentUrl(Uri.parse("https://justa128.github.io/dubai-tour-guide/landingpage/"))
-                // Setting the image that will be shared
-                .setImageUrl(Uri.parse("https://cdn-images-1.medium.com/fit/t/800/240/1*jZ3a6rYqrslI83KJFhdvFg.jpeg"))
+        ShareVideoContent content = new ShareVideoContent.Builder()
+                .setVideo(video)
                 .build();
-        Log.i("aa", "****222******");
         ShareButton shareButton = new ShareButton(this);
+        shareButton.registerCallback(facebookCallbackMgr, fbcallback);
         shareButton.setShareContent(content);
         shareButton.performClick();
     }
