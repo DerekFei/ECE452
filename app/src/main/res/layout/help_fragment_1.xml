@@ -43,7 +43,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.109"
-            app:srcCompat="@drawable/resistor" />
+            android:src="@drawable/resistor" />
 
         <TextView
             android:id="@+id/textView1"
@@ -54,7 +54,7 @@
             android:layout_marginEnd="8dp"
             android:fontFamily="casual"
             android:text="Device name: Resistor"
-            android:textColor="#fff"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
@@ -70,7 +70,7 @@
             android:layout_marginEnd="8dp"
             android:fontFamily="casual"
             android:text="Health: -1"
-            android:textColor="#fff"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
@@ -86,7 +86,7 @@
             android:layout_marginEnd="8dp"
             android:fontFamily="casual"
             android:text="Score: -"
-            android:textColor="#fff"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
@@ -102,7 +102,7 @@
             android:layout_marginEnd="8dp"
             android:fontFamily="casual"
             android:text="Special: -"
-            android:textColor="#fff"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
