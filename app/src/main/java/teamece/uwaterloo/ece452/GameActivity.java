@@ -10,9 +10,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,8 +22,15 @@ import android.hardware.display.VirtualDisplay;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 
+import com.facebook.share.DeviceShareDialog;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareVideo;
+import com.facebook.share.model.ShareVideoContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
 import java.io.IOException;
 
 public class GameActivity extends AppCompatActivity {
@@ -37,12 +46,14 @@ public class GameActivity extends AppCompatActivity {
     private VirtualDisplay virtualDisplay;
     private GameScene gameScene;
     private MediaProjectionCallback callback;
+    private DeviceShareDialog shareDialog;
     private static final int REQUEST_PERMISSIONS = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        shareDialog = new DeviceShareDialog(this);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
@@ -99,6 +110,34 @@ public class GameActivity extends AppCompatActivity {
         mediaProjection.registerCallback(callback, null);
         virtualDisplay = createVirtualDisplay();
         mediaRecorder.start();
+    }
+
+    public void shareOnFb(){
+        File externalFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/GeECE.mp4");
+        Uri videoFileUri = Uri.fromFile(externalFile);
+        Log.i("aa", "**********");
+
+        ShareVideo video = new ShareVideo.Builder()
+                .setLocalUrl(videoFileUri)
+                .build();
+//        ShareVideoContent content = new ShareVideoContent.Builder()
+//                .setVideo(video)
+//                .setContentDescription("Feeling board? Join me and play Geece")
+//                .build();
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                // Setting the title that will be shared
+                .setContentTitle("Planning a trip to Dubai?")
+                // Setting the description that will be shared
+                .setContentDescription("Make sure you visit unique attractions recommended by the local people!")
+                // Setting the URL that will be shared
+                .setContentUrl(Uri.parse("https://justa128.github.io/dubai-tour-guide/landingpage/"))
+                // Setting the image that will be shared
+                .setImageUrl(Uri.parse("https://cdn-images-1.medium.com/fit/t/800/240/1*jZ3a6rYqrslI83KJFhdvFg.jpeg"))
+                .build();
+        Log.i("aa", "****222******");
+        ShareButton shareButton = new ShareButton(this);
+        shareButton.setShareContent(content);
+        shareButton.performClick();
     }
 
     public void recordScreen() {

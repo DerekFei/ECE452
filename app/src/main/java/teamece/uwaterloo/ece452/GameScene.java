@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
@@ -19,12 +21,18 @@ import android.graphics.Bitmap;
 import android.view.WindowManager;
 
 
+import com.facebook.share.model.ShareVideo;
+import com.facebook.share.model.ShareVideoContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 
 public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
@@ -166,6 +174,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                     else if(Math.pow((event.getX()-windowWidth*3/4),2)+Math.pow((event.getY()-windowHeight*4/5),2)<Math.pow(windowWidth/9,2))
                     {
                         //Share to Facebook
+                        ((GameActivity) getContext()).shareOnFb();
                     }
             }
         }
@@ -211,6 +220,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                     else if(Math.pow((event.getX()-windowWidth*3/4),2)+Math.pow((event.getY()-windowHeight*4/5),2)<Math.pow(windowWidth/9,2))
                     {
                         //Share to Facebook
+                        ((GameActivity) getContext()).shareOnFb();
                     }
             }
         }
