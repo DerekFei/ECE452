@@ -81,6 +81,7 @@ public class GameActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         facebookCallbackMgr = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
+        shareDialog.registerCallback(facebookCallbackMgr, fbcallback);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
@@ -96,9 +97,12 @@ public class GameActivity extends AppCompatActivity {
         screenHeight = size.y;
         screenWidth = size.x;
 
-        if (ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) + ContextCompat
+                .checkSelfPermission(this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
             if (ActivityCompat.shouldShowRequestPermissionRationale
-                    (this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    (this, Manifest.permission.WRITE_EXTERNAL_STORAGE) || ActivityCompat.shouldShowRequestPermissionRationale
+                    (this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 Snackbar.make(findViewById(android.R.id.content), "permissions",
                         Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
                         new View.OnClickListener() {
@@ -106,14 +110,14 @@ public class GameActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 ActivityCompat.requestPermissions(GameActivity.this,
                                         new String[]{Manifest.permission
-                                                .WRITE_EXTERNAL_STORAGE},
+                                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                                         REQUEST_PERMISSIONS);
                             }
                         }).show();
             } else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission
-                                .WRITE_EXTERNAL_STORAGE},
+                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                         REQUEST_PERMISSIONS);
             }
         }
