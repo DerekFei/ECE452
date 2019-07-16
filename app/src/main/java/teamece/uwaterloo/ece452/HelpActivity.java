@@ -1,6 +1,9 @@
 package teamece.uwaterloo.ece452;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +30,17 @@ public class HelpActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
-
+        VideoView videoView = findViewById(R.id.videoView);
+        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video_bg;
+        Uri uri = Uri.parse(videoPath);
+        videoView.setVideoURI(uri);
+        videoView.start();
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
         mPager = (ViewPager2) findViewById(R.id.viewpager2);
         mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
