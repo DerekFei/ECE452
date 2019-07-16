@@ -50,6 +50,7 @@ public class GameActivity extends AppCompatActivity {
     private VirtualDisplay virtualDisplay;
     private GameScene gameScene;
     private MediaProjectionCallback callback;
+    private ShareDialog shareDialog;
     private static final int REQUEST_PERMISSIONS = 1000;
     CallbackManager facebookCallbackMgr;
 
@@ -79,6 +80,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         facebookCallbackMgr = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
@@ -139,18 +141,19 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void shareOnFb(){
+
         File externalFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/GeECE.mp4");
         Uri videoFileUri = Uri.fromFile(externalFile);
+
         ShareVideo video = new ShareVideo.Builder()
                 .setLocalUrl(videoFileUri)
                 .build();
+        Log.i("aa", video.getLocalUrl().toString());
         ShareVideoContent content = new ShareVideoContent.Builder()
                 .setVideo(video)
+                .setContentDescription("Feeling board? Join me and play Geece")
                 .build();
-        ShareButton shareButton = new ShareButton(this);
-        shareButton.registerCallback(facebookCallbackMgr, fbcallback);
-        shareButton.setShareContent(content);
-        shareButton.performClick();
+        shareDialog.show(content);
     }
 
     public void recordScreen() {
@@ -164,6 +167,9 @@ public class GameActivity extends AppCompatActivity {
             mediaRecorder.setVideoEncodingBitRate(512 * 1000);
             mediaRecorder.setVideoFrameRate(24);
             mediaRecorder.prepare();
+            Log.i("aa", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) + "/GeECE.mp4");
+            ///storage/emulated/0/DCIM/GeECE.mp4
+            //file:///storage/emulated/0/DCIM/GeECE.mp4
 
         } catch (IOException e) {
             e.printStackTrace();
