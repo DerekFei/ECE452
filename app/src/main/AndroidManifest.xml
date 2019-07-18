@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
         >
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider{559267377936475}"
+        <provider android:authorities="com.facebook.app.FacebookContentProvider559267377936475"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
         <!--<provider android:authorities="com.facebook.app.NativeAppCallContentProvider559267377936475"-->

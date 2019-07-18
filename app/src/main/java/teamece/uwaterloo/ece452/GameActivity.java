@@ -7,6 +7,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.media.MediaRecorder;
@@ -25,12 +26,11 @@ import android.media.projection.MediaProjectionManager;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.share.DeviceShareDialog;
 import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
-import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -70,7 +70,7 @@ public class GameActivity extends AppCompatActivity {
         @Override
         public void onError(FacebookException error) {
             Log.v("s", "wtf cancelled");
-            Log.v("s", error.getMessage());
+            error.printStackTrace();
             // Write some code to do some operations when some error occurs while sharing content.
         }
     };
@@ -130,6 +130,7 @@ public class GameActivity extends AppCompatActivity {
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         facebookCallbackMgr.onActivityResult(requestCode, resultCode, data);
         if (requestCode != PERMISSION_CODE) {
             return;
@@ -152,12 +153,13 @@ public class GameActivity extends AppCompatActivity {
         ShareVideo video = new ShareVideo.Builder()
                 .setLocalUrl(videoFileUri)
                 .build();
-        Log.i("aa", video.getLocalUrl().toString());
+
         ShareVideoContent content = new ShareVideoContent.Builder()
                 .setVideo(video)
                 .setContentDescription("Feeling board? Join me and play Geece")
                 .build();
-        shareDialog.show(content);
+
+        ShareDialog.show(this, content);
     }
 
     public void recordScreen() {
