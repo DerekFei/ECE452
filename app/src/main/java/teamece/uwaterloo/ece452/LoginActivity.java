@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
                 mp.setLooping(true);
             }
         });
-
     }
 
 
@@ -54,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
 
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
-
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -96,18 +94,16 @@ public class LoginActivity extends AppCompatActivity {
 
     public void loginBtnOnClick(View v) {
 // Choose authentication providers
-        Intent homeScreenActivity = new Intent(this, HomeScreenActivity.class);
-        startActivity(homeScreenActivity);
-//        List<AuthUI.IdpConfig> providers = Arrays.asList(
-//                new AuthUI.IdpConfig.FacebookBuilder().build());
-//
-//// Create and launch sign-in intent
-//        startActivityForResult(
-//                AuthUI.getInstance()
-//                        .createSignInIntentBuilder()
-//                        .setAvailableProviders(providers)
-//                        .build(),
-//                RC_SIGN_IN);
+        List<AuthUI.IdpConfig> providers = Arrays.asList(
+                new AuthUI.IdpConfig.FacebookBuilder().build());
+
+// Create and launch sign-in intent
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .build(),
+                RC_SIGN_IN);
 
     }
 }
